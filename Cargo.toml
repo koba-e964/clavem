@@ -1,0 +1,18 @@
+[package]
+name = "clavem"
+version = "0.1.0"
+edition = "2021"
+description = "`clavem` reads a key and displays contained data."
+
+[dependencies]
+pem = "1"
+x509-parser = "0.13"
+asn1-rs = { version = "0.3", features = ["bigint"] }
+oid-registry = { version = "0.4", features = ["crypto", "kdf", "x509"] }
+num-bigint = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+thiserror = "1"
+
+[profile.dev]
+debug = false
