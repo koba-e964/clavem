@@ -1,4 +1,5 @@
-OBJECTS=ed25519-public.pem rsa-libressl-2.2.7-public.pem rsa-public.pem
+OBJECTS=ed25519-public.pem ed448-public.pem rsa-libressl-2.2.7-public.pem \
+	rsa-pss-public.pem rsa-public.pem x25519-public.pem x448-public.pem
 
 .PHONY: all verify clean
 all: verify
