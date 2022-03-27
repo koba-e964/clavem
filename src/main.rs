@@ -1,3 +1,4 @@
+use clavem::openssh;
 use serde::Serialize;
 use std::{env, fs};
 
@@ -46,6 +47,20 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
             }
             let wrapped = Wrapping {
                 ty: "PEM private key",
+                value,
+            };
+            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+        }
+        if pem.tag == "OPENSSH PRIVATE KEY" {
+            let value = openssh::privkey::parse(&pem.contents).unwrap();
+            #[derive(Serialize)]
+            struct Wrapping {
+                #[serde(rename = "type")]
+                ty: &'static str,
+                value: openssh::privkey::PrivateKey,
+            }
+            let wrapped = Wrapping {
+                ty: "OPENSSH private key",
                 value,
             };
             println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
