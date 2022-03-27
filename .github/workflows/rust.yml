@@ -28,4 +28,6 @@ jobs:
     - name: Check formatting
       run: cargo fmt -- --check
     - name: Integration tests
-      run: make -C data/
+      run: |
+        chmod 0600 data/openssh/* # openssh doesn't accept "too open" private keys
+        make -C data/
