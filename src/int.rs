@@ -42,3 +42,9 @@ impl From<BigInt> for DisplayedInt {
         Self::from_bigint(value, 4) // an arbitrary threshold
     }
 }
+
+impl From<u32> for DisplayedInt {
+    fn from(value: u32) -> Self {
+        DisplayedInt::Small(value.into())
+    }
+}

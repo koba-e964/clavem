@@ -1,6 +1,12 @@
 #[derive(Debug, thiserror::Error)]
 #[non_exhaustive]
 pub enum Error {
+    #[error("JSON serialization failed")]
+    JsonSerError(
+        #[from]
+        #[source]
+        serde_json::Error,
+    ),
     #[error("Parsing failed")]
     ParseError,
     #[error("UTF-8 conversion failed")]

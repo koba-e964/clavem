@@ -1,7 +1,9 @@
 use self::error::{Error, Result};
 
+pub mod dsa;
 pub mod error;
 pub mod privkey;
+pub mod rsa;
 
 // nom-like parsing functions
 
