@@ -69,11 +69,13 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
     Ok(())
 }
 
-fn main() {
+fn main() -> Result<(), ()> {
     let args: Vec<String> = env::args().into_iter().collect();
     let filename = args[1].clone();
     let data = fs::read(filename).expect("Unable to read file");
-    if let Ok(_) = parse_as_pem(&data) {
-        return;
+    if parse_as_pem(&data).is_ok() {
+        return Ok(());
     }
+    eprintln!("Unsupported!");
+    Err(())
 }
