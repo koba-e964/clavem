@@ -1,5 +1,5 @@
 #![allow(non_snake_case)]
-use asn1_rs::{Any, DerSequence, FromDer, Integer, OctetString};
+use asn1_rs::{Any, DerSequence, FromDer, Integer, OctetString, Oid};
 use oid_registry::OidRegistry;
 use serde::Serialize;
 
@@ -27,6 +27,8 @@ pub struct PrivateKey {
 
 pub fn parse_private_key(content: &[u8]) -> Result<PrivateKey> {
     let registry = OidRegistry::default().with_crypto().with_kdf().with_x509();
+    let x25519 = Oid::from(&[1, 3, 101, 110]).unwrap();
+    let x448 = Oid::from(&[1, 3, 101, 111]).unwrap();
     let (_, key) = PrivateKeyInfoAsn1::from_der(content).unwrap();
     if key.version.as_i32() != Ok(0) {
         return Err(Error::InvalidInputError);
@@ -42,7 +44,11 @@ pub fn parse_private_key(content: &[u8]) -> Result<PrivateKey> {
         let key = rsa::privkey::parse(key.privateKey.as_cow())?;
         wrapped.private_key = serde_json::to_value(&key)?;
     }
-    if *algorithm == oid_registry::OID_SIG_ED25519 || *algorithm == oid_registry::OID_SIG_ED448 {
+    if *algorithm == oid_registry::OID_SIG_ED25519
+        || *algorithm == oid_registry::OID_SIG_ED448
+        || *algorithm == x25519
+        || *algorithm == x448
+    {
         let key = ed::privkey::parse(key.privateKey.as_cow())?;
         wrapped.private_key = serde_json::to_value(&key)?;
     }

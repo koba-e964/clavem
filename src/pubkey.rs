@@ -32,6 +32,8 @@ pub struct PublicKey {
 
 pub fn parse_public_key(content: &[u8]) -> Result<PublicKey> {
     let registry = OidRegistry::default().with_crypto().with_kdf().with_x509();
+    let x25519 = Oid::from(&[1, 3, 101, 110]).unwrap();
+    let x448 = Oid::from(&[1, 3, 101, 111]).unwrap();
     let (_rem, value) = SubjectPublicKeyInfoAsn1::from_der(content).unwrap();
     let algorithm = &value.algorithm.algorithm;
     let mut wrapped = PublicKey {
@@ -44,7 +46,11 @@ pub fn parse_public_key(content: &[u8]) -> Result<PublicKey> {
         let key = rsa::pubkey::parse(&value.subjectPublicKey.data)?;
         wrapped.public_key = serde_json::to_value(&key)?;
     }
-    if *algorithm == oid_registry::OID_SIG_ED25519 || *algorithm == oid_registry::OID_SIG_ED448 {
+    if *algorithm == oid_registry::OID_SIG_ED25519
+        || *algorithm == oid_registry::OID_SIG_ED448
+        || *algorithm == x25519
+        || *algorithm == x448
+    {
         let key = ed::pubkey::parse(&value.subjectPublicKey.data)?;
         wrapped.public_key = serde_json::to_value(&key)?;
     }
