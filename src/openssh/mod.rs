@@ -1,6 +1,8 @@
 use self::error::{Error, Result};
 
 pub mod dsa;
+pub mod ecdsa;
+pub mod ed25519;
 pub mod error;
 pub mod privkey;
 pub mod rsa;

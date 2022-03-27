@@ -55,6 +55,24 @@ pub fn parse_priv_part(content: &[u8]) -> Result<PrivPart> {
         wrapped.content = serde_json::to_value(&priv_key)?;
         wrapped.comment = String::from_utf8(comment.to_vec())?;
     }
+    if algo == "ssh-ed25519" {
+        let (content, priv_key) = super::ed25519::privkey::parse(content)?;
+        let (content, comment) = super::parse_bytes(content)?;
+        if content.len() >= 8 {
+            return Err(Error::ParseError);
+        }
+        wrapped.content = serde_json::to_value(&priv_key)?;
+        wrapped.comment = String::from_utf8(comment.to_vec())?;
+    }
+    if algo == "ecdsa-sha2-nistp256" {
+        let (content, priv_key) = super::ecdsa::privkey::parse(content)?;
+        let (content, comment) = super::parse_bytes(content)?;
+        if content.len() >= 8 {
+            return Err(Error::ParseError);
+        }
+        wrapped.content = serde_json::to_value(&priv_key)?;
+        wrapped.comment = String::from_utf8(comment.to_vec())?;
+    }
     Ok(wrapped)
 }
 
