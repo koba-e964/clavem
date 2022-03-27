@@ -1,7 +1,7 @@
 use asn1_rs::{DerSequence, FromDer, Integer};
 use serde::Serialize;
 
-use crate::error::Result;
+use crate::error::{Error, Result};
 use crate::int::DisplayedInt;
 
 #[derive(Serialize)]
@@ -11,20 +11,32 @@ pub struct RsaPublicKey {
 }
 
 #[derive(Serialize)]
+pub struct OtherPrime {
+    pub prime: DisplayedInt,
+    pub exponent: DisplayedInt,
+    pub coefficient: DisplayedInt,
+}
+
+#[derive(Serialize)]
 pub struct RsaPrivateKey {
     pub modulus: DisplayedInt,
+    #[serde(rename = "publicExponent")]
     pub public_exponent: DisplayedInt,
+    #[serde(rename = "privateExponent")]
     pub private_exponent: DisplayedInt,
     pub prime1: DisplayedInt,
     pub prime2: DisplayedInt,
     pub exponent1: DisplayedInt,
     pub exponent2: DisplayedInt,
     pub coefficient: DisplayedInt,
-    pub other_primes: Vec<DisplayedInt>,
+    #[serde(skip_serializing_if = "Vec::is_empty", rename = "otherPrimeInfos")]
+    pub other_primes: Vec<OtherPrime>,
 }
 
 #[allow(non_snake_case)]
 pub mod privkey {
+    use asn1_rs::{Any, SequenceOf};
+
     use super::*;
 
     // RFC 8017
@@ -41,24 +53,38 @@ pub mod privkey {
     struct RsaPrivateKeyAsn1<'a> {
         version: Integer<'a>,
         modulus: Integer<'a>,
-        #[allow(non_snake_case)] // reason: Names are taken from the RFC
         publicExponent: Integer<'a>,
-        #[allow(non_snake_case)] // reason: Names are taken from the RFC
         privateExponent: Integer<'a>,
         prime1: Integer<'a>,
         prime2: Integer<'a>,
         exponent1: Integer<'a>,
         exponent2: Integer<'a>,
         coefficient: Integer<'a>,
-        // otherPrimeInfos: Sequence<'a>, // OPTIONAL
+        otherPrimeInfos: Option<Any<'a>>, // OPTIONAL
     }
 
     pub fn parse(content: &[u8]) -> Result<RsaPrivateKey> {
-        let (_rem, value) = RsaPrivateKeyAsn1::from_der(content).unwrap();
+        let (_rem, value) = RsaPrivateKeyAsn1::from_der(content).map_err(asn1_rs::Error::from)?;
         let other_primes = if value.version.as_i32() == Ok(0) {
+            if value.otherPrimeInfos.is_some() {
+                return Err(Error::InvalidInputError);
+            }
             Vec::new()
         } else {
-            todo!()
+            let other_primes = if let Some(info) = value.otherPrimeInfos {
+                info
+            } else {
+                return Err(Error::InvalidInputError);
+            };
+            let other_primes = SequenceOf::<OtherPrimeInfoAsn1>::try_from(other_primes)?;
+            other_primes
+                .into_iter()
+                .map(|info| OtherPrime {
+                    prime: info.prime.as_bigint().into(),
+                    exponent: info.exponent.as_bigint().into(),
+                    coefficient: info.coefficient.as_bigint().into(),
+                })
+                .collect()
         };
         Ok(RsaPrivateKey {
             modulus: value.modulus.as_bigint().into(),

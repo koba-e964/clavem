@@ -30,7 +30,9 @@ impl Serialize for DisplayedInt {
             DisplayedInt::Big { len } => {
                 serializer.serialize_str(&format!("(integer: {} bytes)", len))
             }
-            DisplayedInt::Small(ref value) => serializer.serialize_str(&value.to_str_radix(16)),
+            DisplayedInt::Small(ref value) => {
+                serializer.serialize_str(&("0x".to_string() + &value.to_str_radix(16)))
+            }
         }
     }
 }
