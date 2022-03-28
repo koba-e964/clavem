@@ -2,6 +2,7 @@ use clavem::openssh;
 use serde::Serialize;
 use std::{env, fs};
 
+use clavem::csr;
 use clavem::privkey::{parse_private_key, PrivateKey};
 use clavem::pubkey::{parse_public_key, PublicKey};
 use clavem::rsa::{self, RsaPrivateKey};
@@ -50,6 +51,13 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
                 value,
             };
             println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+        }
+        if pem.tag == "CERTIFICATE" {
+            todo!();
+        }
+        if pem.tag == "CERTIFICATE REQUEST" {
+            let value = csr::parse_csr(&pem.contents).unwrap();
+            println!("{}", serde_json::to_string_pretty(&value).unwrap());
         }
         if pem.tag == "OPENSSH PRIVATE KEY" {
             let value = openssh::privkey::parse(&pem.contents).unwrap();

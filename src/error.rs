@@ -9,6 +9,8 @@ pub enum Error {
     ),
     #[error("Input is invalid")]
     InvalidInputError,
+    #[error("Parsing failed")]
+    ParseError,
     #[error("ASN.1 parsing failed")]
     Asn1Error(
         #[from]

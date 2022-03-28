@@ -1,3 +1,4 @@
+use asn1_rs::Integer;
 use num_bigint::BigInt;
 use serde::Serialize;
 
@@ -46,5 +47,11 @@ impl From<BigInt> for DisplayedInt {
 impl From<u32> for DisplayedInt {
     fn from(value: u32) -> Self {
         DisplayedInt::Small(value.into())
+    }
+}
+
+impl<'a> From<Integer<'a>> for DisplayedInt {
+    fn from(value: Integer<'a>) -> Self {
+        value.as_bigint().into()
     }
 }

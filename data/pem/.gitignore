@@ -1,2 +1,3 @@
 # Public keys are generated automatically from private keys, so they are not checked in.
 *-public.pem
+*.csr
