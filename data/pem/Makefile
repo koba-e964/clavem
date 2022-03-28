@@ -2,6 +2,7 @@ OBJECTS=ed25519-public.pem ed448-public.pem rsa-3primes-public.pem rsa-libressl-
 	rsa-pss-public.pem rsa-public.pem x25519-public.pem x448-public.pem
 CSRS=ed25519.csr ed448.csr rsa-3primes.csr rsa-libressl-2.2.7.csr \
 	rsa-pss.csr rsa.csr
+CERTS=$(CSRS:%.csr:%.crt)
 CHECKS=$(OBJECTS:%-public.pem=%.check)
 CHECKS_CSR=$(CSRS:%.csr=%.check_csr)
 
@@ -14,6 +15,9 @@ all: verify $(CHECKS) $(CHECKS_CSR)
 %.csr: %-private.pem
 	openssl req -new -key $< -out $@ -config req.conf
 
+%.crt: %.csr
+	openssl req -in $< -key ed25519-private.pem -x509 -out $@
+
 verify: $(OBJECTS) sha256sum.txt
 	sha256sum --check sha256sum.txt
 
@@ -21,8 +25,9 @@ $(CHECKS): %.check: %-private.pem %-public.pem
 	cargo run -- $*-private.pem
 	cargo run -- $*-public.pem
 
-$(CHECKS_CSR): %.check_csr: %.csr
+$(CHECKS_CSR): %.check_csr: %.csr %.crt
 	cargo run -- $*.csr
+	cargo run -- $*.crt
 
 clean:
 	$(RM) $(OBJECTS)

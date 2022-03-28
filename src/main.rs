@@ -1,11 +1,10 @@
-use clavem::openssh;
 use serde::Serialize;
 use std::{env, fs};
 
-use clavem::csr;
 use clavem::privkey::{parse_private_key, PrivateKey};
 use clavem::pubkey::{parse_public_key, PublicKey};
 use clavem::rsa::{self, RsaPrivateKey};
+use clavem::{cert, csr, openssh};
 
 fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
     let result = pem::parse_many(&data)?;
@@ -53,11 +52,32 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
             println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
         }
         if pem.tag == "CERTIFICATE" {
-            todo!();
+            let value = cert::parse(&pem.contents).unwrap();
+            #[derive(Serialize)]
+            struct Wrapping {
+                #[serde(rename = "type")]
+                ty: &'static str,
+                value: cert::Certificate,
+            }
+            let wrapped = Wrapping {
+                ty: "PEM certificate",
+                value,
+            };
+            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
         }
         if pem.tag == "CERTIFICATE REQUEST" {
             let value = csr::parse_csr(&pem.contents).unwrap();
-            println!("{}", serde_json::to_string_pretty(&value).unwrap());
+            #[derive(Serialize)]
+            struct Wrapping {
+                #[serde(rename = "type")]
+                ty: &'static str,
+                value: csr::CertificationRequest,
+            }
+            let wrapped = Wrapping {
+                ty: "PEM certificate request",
+                value,
+            };
+            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
         }
         if pem.tag == "OPENSSH PRIVATE KEY" {
             let value = openssh::privkey::parse(&pem.contents).unwrap();

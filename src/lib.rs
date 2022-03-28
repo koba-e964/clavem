@@ -1,3 +1,4 @@
+pub mod cert;
 pub mod csr;
 pub mod ed;
 pub mod error;
