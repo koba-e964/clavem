@@ -55,3 +55,31 @@ impl<'a> From<Integer<'a>> for DisplayedInt {
         value.as_bigint().into()
     }
 }
+
+/// Private integers. Its summary is displayed instead of its content.
+pub struct PrivateInt {
+    len: usize,
+}
+
+impl Serialize for PrivateInt {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let len = self.len;
+        serializer.serialize_str(&format!("(PRIVATE integer: {} bytes)", len))
+    }
+}
+
+impl<'a> From<&'_ Integer<'a>> for PrivateInt {
+    fn from(value: &Integer<'a>) -> Self {
+        Self {
+            len: ((value.as_bigint().bits() + 7) / 8) as usize,
+        }
+    }
+}
+impl From<Integer<'_>> for PrivateInt {
+    fn from(value: Integer) -> Self {
+        (&value).into()
+    }
+}

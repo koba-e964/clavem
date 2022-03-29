@@ -3,8 +3,7 @@ use std::{env, fs};
 
 use clavem::privkey::{parse_private_key, PrivateKey};
 use clavem::pubkey::{parse_public_key, PublicKey};
-use clavem::rsa::{self, RsaPrivateKey};
-use clavem::{cert, csr, openssh};
+use clavem::{cert, csr, openssh, rsa};
 
 fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
     let result = pem::parse_many(&data)?;
@@ -29,7 +28,7 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
             struct Wrapping {
                 #[serde(rename = "type")]
                 ty: &'static str,
-                value: RsaPrivateKey,
+                value: rsa::PrivateKey,
             }
             let wrapped = Wrapping {
                 ty: "PEM RSA private key",

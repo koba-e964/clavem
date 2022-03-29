@@ -2,33 +2,33 @@ use asn1_rs::{DerSequence, FromDer, Integer};
 use serde::Serialize;
 
 use crate::error::{Error, Result};
-use crate::int::DisplayedInt;
+use crate::int::{DisplayedInt, PrivateInt};
 
 #[derive(Serialize)]
-pub struct RsaPublicKey {
+pub struct PublicKey {
     pub modulus: DisplayedInt,
     pub exponent: DisplayedInt,
 }
 
 #[derive(Serialize)]
 pub struct OtherPrime {
-    pub prime: DisplayedInt,
-    pub exponent: DisplayedInt,
-    pub coefficient: DisplayedInt,
+    pub prime: PrivateInt,
+    pub exponent: PrivateInt,
+    pub coefficient: PrivateInt,
 }
 
 #[derive(Serialize)]
-pub struct RsaPrivateKey {
+pub struct PrivateKey {
     pub modulus: DisplayedInt,
     #[serde(rename = "publicExponent")]
     pub public_exponent: DisplayedInt,
     #[serde(rename = "privateExponent")]
-    pub private_exponent: DisplayedInt,
-    pub prime1: DisplayedInt,
-    pub prime2: DisplayedInt,
-    pub exponent1: DisplayedInt,
-    pub exponent2: DisplayedInt,
-    pub coefficient: DisplayedInt,
+    pub private_exponent: PrivateInt,
+    pub prime1: PrivateInt,
+    pub prime2: PrivateInt,
+    pub exponent1: PrivateInt,
+    pub exponent2: PrivateInt,
+    pub coefficient: PrivateInt,
     #[serde(skip_serializing_if = "Vec::is_empty", rename = "otherPrimeInfos")]
     pub other_primes: Vec<OtherPrime>,
 }
@@ -63,7 +63,7 @@ pub mod privkey {
         otherPrimeInfos: Option<Any<'a>>, // OPTIONAL
     }
 
-    pub fn parse(content: &[u8]) -> Result<RsaPrivateKey> {
+    pub fn parse(content: &[u8]) -> Result<PrivateKey> {
         let (_rem, value) = RsaPrivateKeyAsn1::from_der(content).map_err(asn1_rs::Error::from)?;
         let other_primes = if value.version.as_i32() == Ok(0) {
             if value.otherPrimeInfos.is_some() {
@@ -80,21 +80,21 @@ pub mod privkey {
             other_primes
                 .into_iter()
                 .map(|info| OtherPrime {
-                    prime: info.prime.as_bigint().into(),
-                    exponent: info.exponent.as_bigint().into(),
-                    coefficient: info.coefficient.as_bigint().into(),
+                    prime: (&info.prime).into(),
+                    exponent: (&info.exponent).into(),
+                    coefficient: (&info.coefficient).into(),
                 })
                 .collect()
         };
-        Ok(RsaPrivateKey {
-            modulus: value.modulus.as_bigint().into(),
-            public_exponent: value.publicExponent.as_bigint().into(),
-            private_exponent: value.privateExponent.as_bigint().into(),
-            prime1: value.prime1.as_bigint().into(),
-            prime2: value.prime2.as_bigint().into(),
-            exponent1: value.exponent1.as_bigint().into(),
-            exponent2: value.exponent2.as_bigint().into(),
-            coefficient: value.coefficient.as_bigint().into(),
+        Ok(PrivateKey {
+            modulus: value.modulus.into(),
+            public_exponent: value.publicExponent.into(),
+            private_exponent: value.privateExponent.into(),
+            prime1: value.prime1.into(),
+            prime2: value.prime2.into(),
+            exponent1: value.exponent1.into(),
+            exponent2: value.exponent2.into(),
+            coefficient: value.coefficient.into(),
             other_primes,
         })
     }
@@ -111,11 +111,11 @@ pub mod pubkey {
         exponent: Integer<'a>,
     }
 
-    pub fn parse(content: &[u8]) -> Result<RsaPublicKey> {
+    pub fn parse(content: &[u8]) -> Result<PublicKey> {
         let (_, key) = RsaPublicKeyAsn1::from_der(content).unwrap();
-        Ok(RsaPublicKey {
-            modulus: key.modulus.as_bigint().into(),
-            exponent: key.exponent.as_bigint().into(),
+        Ok(PublicKey {
+            modulus: key.modulus.into(),
+            exponent: key.exponent.into(),
         })
     }
 }
