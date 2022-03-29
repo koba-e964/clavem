@@ -29,7 +29,10 @@ pub fn parse_private_key(content: &[u8]) -> Result<PrivateKey> {
     let registry = OidRegistry::default().with_crypto().with_kdf().with_x509();
     let x25519 = Oid::from(&[1, 3, 101, 110]).unwrap();
     let x448 = Oid::from(&[1, 3, 101, 111]).unwrap();
-    let (_, key) = PrivateKeyInfoAsn1::from_der(content).unwrap();
+    let (content, key) = PrivateKeyInfoAsn1::from_der(content).unwrap();
+    if !content.is_empty() {
+        return Err(Error::ParseError);
+    }
     if key.version.as_i32() != Ok(0) {
         return Err(Error::InvalidInputError);
     }
