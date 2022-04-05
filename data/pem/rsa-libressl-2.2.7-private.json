@@ -1,0 +1,13 @@
+{
+  "type": "PEM RSA private key",
+  "value": {
+    "modulus": "(integer: 256 bytes)",
+    "publicExponent": "0x10001",
+    "privateExponent": "(PRIVATE integer: 256 bytes)",
+    "prime1": "(PRIVATE integer: 128 bytes)",
+    "prime2": "(PRIVATE integer: 128 bytes)",
+    "exponent1": "(PRIVATE integer: 128 bytes)",
+    "exponent2": "(PRIVATE integer: 128 bytes)",
+    "coefficient": "(PRIVATE integer: 128 bytes)"
+  }
+}

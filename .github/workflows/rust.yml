@@ -31,3 +31,5 @@ jobs:
       run: |
         chmod 0600 data/openssh/* # openssh doesn't accept "too open" private keys
         make -C data/
+    - name: Assert that no files changed
+      run: git diff --exit-code --stat

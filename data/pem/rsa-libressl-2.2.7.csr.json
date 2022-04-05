@@ -1,0 +1,97 @@
+{
+  "type": "PEM certificate request",
+  "value": {
+    "certificationRequestInfo": {
+      "version": "0x0",
+      "subject": [
+        [
+          {
+            "type": {
+              "oid": "2.5.4.6",
+              "sn": "countryName",
+              "description": "Country Name"
+            },
+            "value": null
+          }
+        ],
+        [
+          {
+            "type": {
+              "oid": "2.5.4.8",
+              "sn": "stateOrProvinceName",
+              "description": "State or Province name"
+            },
+            "value": null
+          }
+        ],
+        [
+          {
+            "type": {
+              "oid": "2.5.4.7",
+              "sn": "localityName",
+              "description": "Locality Name"
+            },
+            "value": null
+          }
+        ],
+        [
+          {
+            "type": {
+              "oid": "2.5.4.10",
+              "sn": "organizationName",
+              "description": "Organization Name"
+            },
+            "value": null
+          }
+        ],
+        [
+          {
+            "type": {
+              "oid": "2.5.4.11",
+              "sn": "organizationalUnit",
+              "description": "Organizational Unit"
+            },
+            "value": null
+          }
+        ],
+        [
+          {
+            "type": {
+              "oid": "2.5.4.3",
+              "sn": "commonName",
+              "description": "Common Name"
+            },
+            "value": null
+          }
+        ],
+        [
+          {
+            "type": {
+              "oid": "1.2.840.113549.1.9.1",
+              "sn": "emailAddress",
+              "description": "Email Address attribute for use in signatures"
+            },
+            "value": null
+          }
+        ]
+      ],
+      "subjectPKInfo": {
+        "algorithm": {
+          "oid": "1.2.840.113549.1.1.1",
+          "sn": "rsaEncryption",
+          "description": "RSAES-PKCS1-v1_5 encryption scheme"
+        },
+        "public_key": {
+          "modulus": "(integer: 256 bytes)",
+          "exponent": "0x10001"
+        }
+      }
+    },
+    "signatureAlgorithm": {
+      "oid": "1.2.840.113549.1.1.11",
+      "sn": "sha256WithRSAEncryption",
+      "description": "SHA256 with RSA encryption"
+    },
+    "signature": "(bitstring: 256 bytes)"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "PEM private key",
+  "value": {
+    "algorithm": {
+      "oid": "1.2.840.113549.1.1.1",
+      "sn": "rsaEncryption",
+      "description": "RSAES-PKCS1-v1_5 encryption scheme"
+    },
+    "private_key": {
+      "modulus": "(integer: 256 bytes)",
+      "publicExponent": "0x10001",
+      "privateExponent": "(PRIVATE integer: 256 bytes)",
+      "prime1": "(PRIVATE integer: 86 bytes)",
+      "prime2": "(PRIVATE integer: 86 bytes)",
+      "exponent1": "(PRIVATE integer: 86 bytes)",
+      "exponent2": "(PRIVATE integer: 85 bytes)",
+      "coefficient": "(PRIVATE integer: 86 bytes)",
+      "otherPrimeInfos": [
+        {
+          "prime": "(PRIVATE integer: 86 bytes)",
+          "exponent": "(PRIVATE integer: 86 bytes)",
+          "coefficient": "(PRIVATE integer: 85 bytes)"
+        }
+      ]
+    }
+  }
+}

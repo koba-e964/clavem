@@ -1,0 +1,13 @@
+{
+  "type": "PEM public key",
+  "value": {
+    "algorithm": {
+      "oid": "1.3.101.112",
+      "sn": "ed25519",
+      "description": "Edwards-curve Digital Signature Algorithm (EdDSA) Ed25519"
+    },
+    "public_key": {
+      "point": "(bitstring: 32 bytes)"
+    }
+  }
+}

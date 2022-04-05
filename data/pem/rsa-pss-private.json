@@ -1,0 +1,20 @@
+{
+  "type": "PEM private key",
+  "value": {
+    "algorithm": {
+      "oid": "1.2.840.113549.1.1.10",
+      "sn": "rsassa-pss",
+      "description": "RSA Signature Scheme with Probabilistic Signature Scheme (RSASSA-PSS)"
+    },
+    "private_key": {
+      "modulus": "(integer: 256 bytes)",
+      "publicExponent": "0x10001",
+      "privateExponent": "(PRIVATE integer: 256 bytes)",
+      "prime1": "(PRIVATE integer: 128 bytes)",
+      "prime2": "(PRIVATE integer: 128 bytes)",
+      "exponent1": "(PRIVATE integer: 128 bytes)",
+      "exponent2": "(PRIVATE integer: 128 bytes)",
+      "coefficient": "(PRIVATE integer: 128 bytes)"
+    }
+  }
+}

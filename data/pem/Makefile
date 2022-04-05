@@ -22,12 +22,12 @@ verify: $(OBJECTS) sha256sum.txt
 	sha256sum --check sha256sum.txt
 
 $(CHECKS): %.check: %-private.pem %-public.pem
-	cargo run -- $*-private.pem
-	cargo run -- $*-public.pem
+	cargo run -- $*-private.pem | tee $*-private.json
+	cargo run -- $*-public.pem | tee $*-public.json
 
 $(CHECKS_CSR): %.check_csr: %.csr %.crt
-	cargo run -- $*.csr
-	cargo run -- $*.crt
+	cargo run -- $*.csr | tee $*.csr.json
+	cargo run -- $*.crt | tee $*.crt.json
 
 clean:
 	$(RM) $(OBJECTS)

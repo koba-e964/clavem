@@ -11,7 +11,7 @@ verify: $(OBJECTS) sha256sum.txt
 	sha256sum --check sha256sum.txt
 
 $(CHECKS): %.check: % %.pub
-	cargo run -- $*
+	cargo run -- $* | tee $*.json
 
 clean:
 	$(RM) $(OBJECTS)

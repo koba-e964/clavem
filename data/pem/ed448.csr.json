@@ -1,0 +1,96 @@
+{
+  "type": "PEM certificate request",
+  "value": {
+    "certificationRequestInfo": {
+      "version": "0x0",
+      "subject": [
+        [
+          {
+            "type": {
+              "oid": "2.5.4.6",
+              "sn": "countryName",
+              "description": "Country Name"
+            },
+            "value": null
+          }
+        ],
+        [
+          {
+            "type": {
+              "oid": "2.5.4.8",
+              "sn": "stateOrProvinceName",
+              "description": "State or Province name"
+            },
+            "value": null
+          }
+        ],
+        [
+          {
+            "type": {
+              "oid": "2.5.4.7",
+              "sn": "localityName",
+              "description": "Locality Name"
+            },
+            "value": null
+          }
+        ],
+        [
+          {
+            "type": {
+              "oid": "2.5.4.10",
+              "sn": "organizationName",
+              "description": "Organization Name"
+            },
+            "value": null
+          }
+        ],
+        [
+          {
+            "type": {
+              "oid": "2.5.4.11",
+              "sn": "organizationalUnit",
+              "description": "Organizational Unit"
+            },
+            "value": null
+          }
+        ],
+        [
+          {
+            "type": {
+              "oid": "2.5.4.3",
+              "sn": "commonName",
+              "description": "Common Name"
+            },
+            "value": null
+          }
+        ],
+        [
+          {
+            "type": {
+              "oid": "1.2.840.113549.1.9.1",
+              "sn": "emailAddress",
+              "description": "Email Address attribute for use in signatures"
+            },
+            "value": null
+          }
+        ]
+      ],
+      "subjectPKInfo": {
+        "algorithm": {
+          "oid": "1.3.101.113",
+          "sn": "ed448",
+          "description": "Edwards-curve Digital Signature Algorithm (EdDSA) Ed448"
+        },
+        "public_key": {
+          "point": "(bitstring: 57 bytes)"
+        }
+      }
+    },
+    "signatureAlgorithm": {
+      "oid": "1.3.101.113",
+      "sn": "ed448",
+      "description": "Edwards-curve Digital Signature Algorithm (EdDSA) Ed448"
+    },
+    "signature": "(bitstring: 114 bytes)"
+  }
+}
