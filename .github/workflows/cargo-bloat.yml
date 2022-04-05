@@ -30,6 +30,8 @@ jobs:
       run: cargo bloat --profile=release-cargo-bloat --time --jobs 1
     - name: cargo bloat (display, release)
       run: cargo bloat --profile=release-cargo-bloat
+    - name: cargo bloat (display, per-crate, release)
+      run: cargo bloat --profile=release-cargo-bloat --crates
     - name: cargo bloat (testing, release)
       # Size <= 1MiB?
       run: cargo bloat --profile=release-cargo-bloat --message-format json | jq --exit-status '."file-size" <= 1048576'
