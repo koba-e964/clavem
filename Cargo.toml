@@ -6,7 +6,6 @@ description = "`clavem` reads a key and displays contained data."
 
 [dependencies]
 pem = "1"
-x509-parser = "0.13"
 asn1-rs = { version = "0.3", features = ["bigint"] }
 oid-registry = { version = "0.4", features = ["crypto", "kdf", "x509"] }
 num-bigint = "0.4"
