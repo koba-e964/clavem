@@ -22,8 +22,10 @@ openssh = []
 debug = false
 
 [profile.release]
+opt-level = "z"
+lto = true
 strip = "symbols"
 
 [profile.release-cargo-bloat]
 inherits = "release"
-strip = "debuginfo" # "symbols" prevents cargo-bloat from displaying crate-wise info. 
+strip = "debuginfo" # "symbols" prevents cargo-bloat from displaying crate-wise info.
