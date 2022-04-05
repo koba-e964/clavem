@@ -17,4 +17,8 @@ thiserror = "1"
 debug = false
 
 [profile.release]
-strip = "debuginfo" # "symbols" prevents cargo-bloat from working. 
+strip = "symbols"
+
+[profile.release-cargo-bloat]
+inherits = "release"
+strip = "debuginfo" # "symbols" prevents cargo-bloat from displaying crate-wise info. 
