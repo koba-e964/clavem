@@ -13,6 +13,11 @@ serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
 thiserror = "1"
 
+[features]
+default = ["der", "openssh"]
+der = []
+openssh = []
+
 [profile.dev]
 debug = false
 

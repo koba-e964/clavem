@@ -6,10 +6,10 @@ use asn1_rs::{
 use oid_registry::OidRegistry;
 use serde::Serialize;
 
+use crate::der::object::Object;
+use crate::der::pubkey::{AlgorithmIdentifierAsn1, PublicKey, SubjectPublicKeyInfoAsn1};
 use crate::error::{Error, Result};
 use crate::int::DisplayedInt;
-use crate::object::Object;
-use crate::pubkey::{AlgorithmIdentifierAsn1, PublicKey, SubjectPublicKeyInfoAsn1};
 use crate::string::BitStr;
 
 #[derive(DerSequence)]

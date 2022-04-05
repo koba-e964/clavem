@@ -3,10 +3,10 @@ use asn1_rs::{Any, DerSequence, FromDer, Integer, OctetString, Oid};
 use oid_registry::OidRegistry;
 use serde::Serialize;
 
+use crate::der::object::Object;
+use crate::der::pubkey::AlgorithmIdentifierAsn1;
+use crate::der::{ed, rsa};
 use crate::error::{Error, Result};
-use crate::object::Object;
-use crate::pubkey::AlgorithmIdentifierAsn1;
-use crate::{ed, rsa};
 
 // RFC 5208
 // https://datatracker.ietf.org/doc/html/rfc5208#section-5

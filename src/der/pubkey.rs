@@ -3,9 +3,9 @@ use asn1_rs::{Any, BitString, DerSequence, FromDer, Oid};
 use oid_registry::OidRegistry;
 use serde::Serialize;
 
+use crate::der::object::Object;
+use crate::der::{ed, rsa};
 use crate::error::Result;
-use crate::object::Object;
-use crate::{ed, rsa};
 
 // RFC 2459
 // https://datatracker.ietf.org/doc/html/rfc2459#section-4.1.1.2

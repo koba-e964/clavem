@@ -3,10 +3,10 @@ use asn1_rs::{Any, BitString, DerSequence, FromDer, Integer, Oid, Sequence, Set}
 use oid_registry::OidRegistry;
 use serde::Serialize;
 
+use crate::der::object::Object;
+use crate::der::pubkey::{AlgorithmIdentifierAsn1, PublicKey, SubjectPublicKeyInfoAsn1};
 use crate::error::{Error, Result};
 use crate::int::DisplayedInt;
-use crate::object::Object;
-use crate::pubkey::{AlgorithmIdentifierAsn1, PublicKey, SubjectPublicKeyInfoAsn1};
 use crate::string::BitStr;
 
 // https://www.itu.int/ITU-T/formal-language/itu-t/x/x501/2012/InformationFramework.html#InformationFramework.AttributeTypeAndValue

@@ -1,11 +1,7 @@
-pub mod cert;
-pub mod csr;
-pub mod ed;
+#[cfg(feature = "der")]
+pub mod der;
 pub mod error;
 pub mod int;
-pub mod object;
+#[cfg(feature = "openssh")]
 pub mod openssh;
-pub mod privkey;
-pub mod pubkey;
-pub mod rsa;
 pub mod string;
