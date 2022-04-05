@@ -4,31 +4,19 @@
     "tbsCertificate": {
       "version": "0x2",
       "serialNumber": "(integer: 20 bytes)",
-      "signature": {
-        "oid": "1.3.101.112",
-        "sn": "ed25519",
-        "description": "Edwards-curve Digital Signature Algorithm (EdDSA) Ed25519"
-      },
+      "signature": "ed25519 (1.3.101.112)",
       "issuer": null,
       "validity": null,
       "subject": null,
       "subjectPublicKeyInfo": {
-        "algorithm": {
-          "oid": "1.3.101.113",
-          "sn": "ed448",
-          "description": "Edwards-curve Digital Signature Algorithm (EdDSA) Ed448"
-        },
+        "algorithm": "ed448 (1.3.101.113)",
         "public_key": {
           "point": "(bitstring: 57 bytes)"
         }
       },
       "issuer_uid": null
     },
-    "signatureAlgorithm": {
-      "oid": "1.3.101.112",
-      "sn": "ed25519",
-      "description": "Edwards-curve Digital Signature Algorithm (EdDSA) Ed25519"
-    },
+    "signatureAlgorithm": "ed25519 (1.3.101.112)",
     "signatureValue": "(bitstring: 64 bytes)"
   }
 }

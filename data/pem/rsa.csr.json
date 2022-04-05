@@ -6,92 +6,56 @@
       "subject": [
         [
           {
-            "type": {
-              "oid": "2.5.4.6",
-              "sn": "countryName",
-              "description": "Country Name"
-            },
+            "type": "countryName (2.5.4.6)",
             "value": null
           }
         ],
         [
           {
-            "type": {
-              "oid": "2.5.4.8",
-              "sn": "stateOrProvinceName",
-              "description": "State or Province name"
-            },
+            "type": "stateOrProvinceName (2.5.4.8)",
             "value": null
           }
         ],
         [
           {
-            "type": {
-              "oid": "2.5.4.7",
-              "sn": "localityName",
-              "description": "Locality Name"
-            },
+            "type": "localityName (2.5.4.7)",
             "value": null
           }
         ],
         [
           {
-            "type": {
-              "oid": "2.5.4.10",
-              "sn": "organizationName",
-              "description": "Organization Name"
-            },
+            "type": "organizationName (2.5.4.10)",
             "value": null
           }
         ],
         [
           {
-            "type": {
-              "oid": "2.5.4.11",
-              "sn": "organizationalUnit",
-              "description": "Organizational Unit"
-            },
+            "type": "organizationalUnit (2.5.4.11)",
             "value": null
           }
         ],
         [
           {
-            "type": {
-              "oid": "2.5.4.3",
-              "sn": "commonName",
-              "description": "Common Name"
-            },
+            "type": "commonName (2.5.4.3)",
             "value": null
           }
         ],
         [
           {
-            "type": {
-              "oid": "1.2.840.113549.1.9.1",
-              "sn": "emailAddress",
-              "description": "Email Address attribute for use in signatures"
-            },
+            "type": "emailAddress (1.2.840.113549.1.9.1)",
             "value": null
           }
         ]
       ],
       "subjectPKInfo": {
-        "algorithm": {
-          "oid": "1.2.840.113549.1.1.1",
-          "sn": "rsaEncryption",
-          "description": "RSAES-PKCS1-v1_5 encryption scheme"
-        },
+        "algorithm": "rsaEncryption (1.2.840.113549.1.1.1)",
         "public_key": {
           "modulus": "(integer: 256 bytes)",
           "exponent": "0x10001"
         }
       }
     },
-    "signatureAlgorithm": {
-      "oid": "1.2.840.113549.1.1.11",
-      "sn": "sha256WithRSAEncryption",
-      "description": "SHA256 with RSA encryption"
-    },
+    "signatureAlgorithm": "sha256WithRSAEncryption (1.2.840.113549.1.1.11)",
     "signature": "(bitstring: 256 bytes)"
   }
 }

@@ -2,11 +2,23 @@ use oid_registry::{Oid, OidEntry};
 use serde::Serialize;
 
 /// Representation of an OID entry.
-#[derive(Serialize)]
 pub struct Object {
     pub oid: String,
     pub sn: Option<String>,
     pub description: Option<String>,
+}
+
+impl Serialize for Object {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        if let Some(sn) = &self.sn {
+            serializer.serialize_str(&format!("{} ({})", sn, self.oid))
+        } else {
+            serializer.serialize_str(&format!("unknown ({})", self.oid))
+        }
+    }
 }
 
 impl<'a> From<(&'a Oid<'a>, Option<&'a OidEntry>)> for Object {

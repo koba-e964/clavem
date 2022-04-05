@@ -1,11 +1,7 @@
 {
   "type": "PEM private key",
   "value": {
-    "algorithm": {
-      "oid": "1.3.101.110",
-      "sn": null,
-      "description": null
-    },
+    "algorithm": "unknown (1.3.101.110)",
     "private_key": {
       "scalar": "(PRIVATE integer: 31 bytes)"
     }
