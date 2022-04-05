@@ -15,3 +15,6 @@ thiserror = "1"
 
 [profile.dev]
 debug = false
+
+[profile.release]
+strip = "debuginfo" # "symbols" prevents cargo-bloat from working. 
