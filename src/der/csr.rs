@@ -5,6 +5,7 @@ use serde::Serialize;
 
 use crate::der::object::Object;
 use crate::der::pubkey::{AlgorithmIdentifierAsn1, PublicKey, SubjectPublicKeyInfoAsn1};
+use crate::der::registry;
 use crate::error::{Error, Result};
 use crate::int::DisplayedInt;
 use crate::string::BitStr;
@@ -107,11 +108,7 @@ impl<'a> CertificationRequestAsn1<'a> {
 }
 
 pub fn parse_csr(content: &[u8]) -> Result<CertificationRequest> {
-    let registry = OidRegistry::default()
-        .with_crypto()
-        .with_kdf()
-        .with_x509()
-        .with_pkcs9();
+    let registry = registry::get();
     let (content, value) =
         CertificationRequestAsn1::from_der(content).map_err(asn1_rs::Error::from)?;
     if !content.is_empty() {

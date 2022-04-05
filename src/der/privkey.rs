@@ -1,11 +1,10 @@
 #![allow(non_snake_case)]
 use asn1_rs::{Any, DerSequence, FromDer, Integer, OctetString, Oid};
-use oid_registry::OidRegistry;
 use serde::Serialize;
 
 use crate::der::object::Object;
 use crate::der::pubkey::AlgorithmIdentifierAsn1;
-use crate::der::{ed, rsa};
+use crate::der::{ed, registry, rsa};
 use crate::error::{Error, Result};
 
 // RFC 5208
@@ -26,7 +25,7 @@ pub struct PrivateKey {
 }
 
 pub fn parse_private_key(content: &[u8]) -> Result<PrivateKey> {
-    let registry = OidRegistry::default().with_crypto().with_kdf().with_x509();
+    let registry = registry::get();
     let x25519 = Oid::from(&[1, 3, 101, 110]).unwrap();
     let x448 = Oid::from(&[1, 3, 101, 111]).unwrap();
     let (content, key) = PrivateKeyInfoAsn1::from_der(content).unwrap();

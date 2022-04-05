@@ -4,7 +4,7 @@ use oid_registry::OidRegistry;
 use serde::Serialize;
 
 use crate::der::object::Object;
-use crate::der::{ed, rsa};
+use crate::der::{ed, registry, rsa};
 use crate::error::Result;
 
 // RFC 2459
@@ -66,7 +66,7 @@ pub struct PublicKey {
 }
 
 pub fn parse_public_key(content: &[u8]) -> Result<PublicKey> {
-    let registry = OidRegistry::default().with_crypto().with_kdf().with_x509();
+    let registry = registry::get();
     let (_rem, value) = SubjectPublicKeyInfoAsn1::from_der(content).unwrap();
     value.to(&registry)
 }
