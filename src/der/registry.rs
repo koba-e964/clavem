@@ -101,5 +101,21 @@ pub fn get() -> OidRegistry<'static> {
         OidEntry::new("dnQualifier", "DN Qualifier"),
     );
 
+    // Additional entries that are missing in oid_registry
+    registry.insert(
+        oid!(1.3.101 .110),
+        OidEntry::new(
+            "X25519",
+            "Curve25519 (or X25519) algorithm used with the Diffie-Hellman operation",
+        ),
+    );
+    registry.insert(
+        oid!(1.3.101 .111),
+        OidEntry::new(
+            "X448",
+            "Curve448 (or X448) algorithm used with the Diffie-Hellman operation",
+        ),
+    );
+
     registry
 }
