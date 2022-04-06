@@ -1,5 +1,5 @@
 use oid_registry::{Oid, OidEntry};
-use serde::Serialize;
+use serde_lite::{Intermediate, Serialize};
 
 /// Representation of an OID entry.
 pub struct Object {
@@ -9,15 +9,12 @@ pub struct Object {
 }
 
 impl Serialize for Object {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        if let Some(sn) = &self.sn {
-            serializer.serialize_str(&format!("{} ({})", sn, self.oid))
+    fn serialize(&self) -> Result<Intermediate, serde_lite::Error> {
+        Ok(Intermediate::String(if let Some(sn) = &self.sn {
+            format!("{} ({})", sn, self.oid)
         } else {
-            serializer.serialize_str(&format!("unknown ({})", self.oid))
-        }
+            format!("unknown ({})", self.oid)
+        }))
     }
 }
 

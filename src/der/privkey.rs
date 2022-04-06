@@ -1,6 +1,6 @@
 #![allow(non_snake_case)]
 use asn1_rs::{Any, DerSequence, FromDer, Integer, OctetString, Oid};
-use serde::Serialize;
+use serde_lite::{Intermediate, Serialize};
 
 use crate::der::object::Object;
 use crate::der::pubkey::AlgorithmIdentifierAsn1;
@@ -21,7 +21,7 @@ struct PrivateKeyInfoAsn1<'a> {
 #[derive(Serialize)]
 pub struct PrivateKey {
     pub algorithm: Object,
-    pub private_key: serde_json::Value,
+    pub private_key: Intermediate,
 }
 
 pub fn parse_private_key(content: &[u8]) -> Result<PrivateKey> {
@@ -38,13 +38,13 @@ pub fn parse_private_key(content: &[u8]) -> Result<PrivateKey> {
     let algorithm = &key.privateKeyAlgorithm.algorithm;
     let mut wrapped = PrivateKey {
         algorithm: (algorithm, registry.get(algorithm)).into(),
-        private_key: serde_json::Value::String("unknown algorithm".to_string()),
+        private_key: Intermediate::String("unknown algorithm".to_string()),
     };
     if *algorithm == oid_registry::OID_PKCS1_RSAENCRYPTION
         || *algorithm == oid_registry::OID_PKCS1_RSASSAPSS
     {
         let key = rsa::privkey::parse(key.privateKey.as_cow())?;
-        wrapped.private_key = serde_json::to_value(&key)?;
+        wrapped.private_key = key.serialize()?;
     }
     if *algorithm == oid_registry::OID_SIG_ED25519
         || *algorithm == oid_registry::OID_SIG_ED448
@@ -52,7 +52,7 @@ pub fn parse_private_key(content: &[u8]) -> Result<PrivateKey> {
         || *algorithm == x448
     {
         let key = ed::privkey::parse(key.privateKey.as_cow())?;
-        wrapped.private_key = serde_json::to_value(&key)?;
+        wrapped.private_key = key.serialize()?;
     }
     Ok(wrapped)
 }

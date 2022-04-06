@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde_lite::Serialize;
 
 use crate::error::Result;
 use crate::int::PrivateInt;

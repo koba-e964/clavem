@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde_lite::{Intermediate, Serialize};
 
 use crate::int::DisplayedInt;
 
@@ -10,7 +10,7 @@ const HEADER: &[u8] = b"openssh-key-v1\0";
 pub struct PrivPart {
     pub checksum: DisplayedInt,
     pub algo: String,
-    pub content: serde_json::Value,
+    pub content: Intermediate,
     pub comment: String,
 }
 
@@ -19,7 +19,7 @@ pub struct PrivateKey {
     pub ciphername: String,
     pub kdfname: String,
     pub kdf: String,
-    pub pub_part: (),
+    pub pub_part: Option<i32>,
     pub priv_part: PrivPart,
 }
 
@@ -34,7 +34,7 @@ pub fn parse_priv_part(content: &[u8]) -> Result<PrivPart> {
     let mut wrapped = PrivPart {
         checksum: rand0.into(),
         algo: algo.clone(),
-        content: serde_json::Value::String("unknown algorithm".to_string()),
+        content: Intermediate::String("unknown algorithm".to_string()),
         comment: "".to_string(),
     };
     if algo == "ssh-rsa" {
@@ -43,7 +43,7 @@ pub fn parse_priv_part(content: &[u8]) -> Result<PrivPart> {
         if content.len() >= 8 {
             return Err(Error::ParseError);
         }
-        wrapped.content = serde_json::to_value(&priv_key)?;
+        wrapped.content = priv_key.serialize()?;
         wrapped.comment = String::from_utf8(comment.to_vec())?;
     }
     if algo == "ssh-dss" {
@@ -52,7 +52,7 @@ pub fn parse_priv_part(content: &[u8]) -> Result<PrivPart> {
         if content.len() >= 8 {
             return Err(Error::ParseError);
         }
-        wrapped.content = serde_json::to_value(&priv_key)?;
+        wrapped.content = priv_key.serialize()?;
         wrapped.comment = String::from_utf8(comment.to_vec())?;
     }
     if algo == "ssh-ed25519" {
@@ -61,7 +61,7 @@ pub fn parse_priv_part(content: &[u8]) -> Result<PrivPart> {
         if content.len() >= 8 {
             return Err(Error::ParseError);
         }
-        wrapped.content = serde_json::to_value(&priv_key)?;
+        wrapped.content = priv_key.serialize()?;
         wrapped.comment = String::from_utf8(comment.to_vec())?;
     }
     if algo == "ecdsa-sha2-nistp256" {
@@ -70,7 +70,7 @@ pub fn parse_priv_part(content: &[u8]) -> Result<PrivPart> {
         if content.len() >= 8 {
             return Err(Error::ParseError);
         }
-        wrapped.content = serde_json::to_value(&priv_key)?;
+        wrapped.content = priv_key.serialize()?;
         wrapped.comment = String::from_utf8(comment.to_vec())?;
     }
     Ok(wrapped)
@@ -96,7 +96,7 @@ pub fn parse(content: &[u8]) -> Result<PrivateKey> {
         ciphername: String::from_utf8(ciphername.to_vec())?,
         kdfname: String::from_utf8(kdfname.to_vec())?,
         kdf: String::from_utf8(kdf.to_vec())?,
-        pub_part: (),
+        pub_part: None,
         priv_part,
     };
     Ok(wrapped)

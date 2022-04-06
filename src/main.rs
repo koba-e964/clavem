@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde_lite::Serialize;
 use std::{env, fs};
 
 #[cfg(feature = "der")]
@@ -26,7 +26,10 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
                 ty: "PEM public key",
                 value,
             };
-            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&wrapped.serialize().unwrap()).unwrap()
+            );
         }
         #[cfg(feature = "der")]
         if pem.tag == "RSA PRIVATE KEY" {
@@ -41,7 +44,10 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
                 ty: "PEM RSA private key",
                 value,
             };
-            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&wrapped.serialize().unwrap()).unwrap()
+            );
         }
         #[cfg(feature = "der")]
         if pem.tag == "PRIVATE KEY" {
@@ -56,7 +62,10 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
                 ty: "PEM private key",
                 value,
             };
-            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&wrapped.serialize().unwrap()).unwrap()
+            );
         }
         #[cfg(feature = "der")]
         if pem.tag == "CERTIFICATE" {
@@ -71,7 +80,10 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
                 ty: "PEM certificate",
                 value,
             };
-            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&wrapped.serialize().unwrap()).unwrap()
+            );
         }
         #[cfg(feature = "der")]
         if pem.tag == "CERTIFICATE REQUEST" {
@@ -86,7 +98,10 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
                 ty: "PEM certificate request",
                 value,
             };
-            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&wrapped.serialize().unwrap()).unwrap()
+            );
         }
         #[cfg(feature = "openssh")]
         if pem.tag == "OPENSSH PRIVATE KEY" {
@@ -101,7 +116,10 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
                 ty: "OPENSSH private key",
                 value,
             };
-            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+            println!(
+                "{}",
+                serde_json::to_string_pretty(&wrapped.serialize().unwrap()).unwrap()
+            );
         }
     }
     Ok(())

@@ -1,5 +1,5 @@
 use num_bigint::{BigInt, Sign};
-use serde::Serialize;
+use serde_lite::Serialize;
 
 use crate::int::DisplayedInt;
 

@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 use asn1_rs::{Any, BitString, DerSequence, FromDer, Integer, Oid, Sequence, Set};
 use oid_registry::OidRegistry;
-use serde::Serialize;
+use serde_lite::Serialize;
 
 use crate::der::object::Object;
 use crate::der::pubkey::{AlgorithmIdentifierAsn1, PublicKey, SubjectPublicKeyInfoAsn1};
@@ -22,7 +22,7 @@ struct AttributeTypeAndValueAsn1<'a> {
 pub struct AttributeTypeAndValue {
     #[serde(rename = "type")]
     pub ty: Object,
-    pub value: (), // TODO
+    pub value: Option<i32>, // TODO
 }
 
 impl AttributeTypeAndValue {
@@ -31,7 +31,7 @@ impl AttributeTypeAndValue {
         eprintln!("value = {:?}", x.value);
         Self {
             ty: (&x.r#type, entry).into(),
-            value: (),
+            value: None,
         }
     }
 }

@@ -1,5 +1,5 @@
 use asn1_rs::BitString;
-use serde::Serialize;
+use serde_lite::{Intermediate, Serialize};
 
 pub struct BitStr {
     pub len: usize,
@@ -7,18 +7,12 @@ pub struct BitStr {
 }
 
 impl Serialize for BitStr {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        if self.unused == 0 {
-            serializer.serialize_str(&format!("(bitstring: {} bytes)", self.len))
+    fn serialize(&self) -> Result<Intermediate, serde_lite::Error> {
+        Ok(Intermediate::String(if self.unused == 0 {
+            format!("(bitstring: {} bytes)", self.len)
         } else {
-            serializer.serialize_str(&format!(
-                "(bitstring: {} bits)",
-                self.len * 8 - self.unused as usize,
-            ))
-        }
+            format!("(bitstring: {} bits)", self.len * 8 - self.unused as usize,)
+        }))
     }
 }
 
@@ -37,18 +31,15 @@ pub struct PrivateBitStr {
 }
 
 impl Serialize for PrivateBitStr {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        if self.unused == 0 {
-            serializer.serialize_str(&format!("(PRIVATE bitstring: {} bytes)", self.len))
+    fn serialize(&self) -> Result<Intermediate, serde_lite::Error> {
+        Ok(Intermediate::String(if self.unused == 0 {
+            format!("(PRIVATE bitstring: {} bytes)", self.len)
         } else {
-            serializer.serialize_str(&format!(
+            format!(
                 "(PRIVATE bitstring: {} bits)",
                 self.len * 8 - self.unused as usize,
-            ))
-        }
+            )
+        }))
     }
 }
 

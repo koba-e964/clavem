@@ -9,7 +9,7 @@ pem = "1"
 asn1-rs = { version = "0.3", features = ["bigint"] }
 oid-registry = { version = "0.4", features = ["crypto", "kdf"] }
 num-bigint = "0.4"
-serde = { version = "1", features = ["derive"] }
+serde-lite = { version = "0.2", features = ["derive", "preserve-order"] }
 serde_json = { version = "1", features = ["preserve_order"] }
 thiserror = "1"
 
@@ -29,3 +29,7 @@ strip = "symbols"
 [profile.release-cargo-bloat]
 inherits = "release"
 strip = "debuginfo" # "symbols" prevents cargo-bloat from displaying crate-wise info.
+
+[patch.crates-io.serde-lite-derive]
+git = "https://github.com/koba-e964/serde-lite"
+branch = "fix/result-hygiene"

@@ -1,6 +1,6 @@
 use asn1_rs::Integer;
 use num_bigint::BigInt;
-use serde::Serialize;
+use serde_lite::{Intermediate, Serialize};
 
 /// Displayed integers. If the value is too big, its summary is displayed instead.
 pub enum DisplayedInt {
@@ -23,18 +23,13 @@ impl DisplayedInt {
 }
 
 impl Serialize for DisplayedInt {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        match *self {
+    fn serialize(&self) -> Result<Intermediate, serde_lite::Error> {
+        Ok(Intermediate::String(match *self {
             DisplayedInt::Big { len } => {
-                serializer.serialize_str(&format!("(integer: {} bytes)", len))
+                format!("(integer: {} bytes)", len)
             }
-            DisplayedInt::Small(ref value) => {
-                serializer.serialize_str(&("0x".to_string() + &value.to_str_radix(16)))
-            }
-        }
+            DisplayedInt::Small(ref value) => "0x".to_string() + &value.to_str_radix(16),
+        }))
     }
 }
 
@@ -62,12 +57,12 @@ pub struct PrivateInt {
 }
 
 impl Serialize for PrivateInt {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
+    fn serialize(&self) -> Result<Intermediate, serde_lite::Error> {
         let len = self.len;
-        serializer.serialize_str(&format!("(PRIVATE integer: {} bytes)", len))
+        Ok(Intermediate::String(format!(
+            "(PRIVATE integer: {} bytes)",
+            len
+        )))
     }
 }
 

@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 use asn1_rs::{Any, BitString, DerSequence, FromDer, Oid};
 use oid_registry::OidRegistry;
-use serde::Serialize;
+use serde_lite::{Intermediate, Serialize};
 
 use crate::der::object::Object;
 use crate::der::{ed, registry, rsa};
@@ -39,13 +39,13 @@ impl<'a> SubjectPublicKeyInfoAsn1<'a> {
         let algorithm = &value.algorithm.algorithm;
         let mut wrapped = PublicKey {
             algorithm: value.algorithm.to(registry),
-            public_key: serde_json::Value::String("unknown algorithm".to_string()),
+            public_key: Intermediate::String("unknown algorithm".to_string()),
         };
         if *algorithm == oid_registry::OID_PKCS1_RSAENCRYPTION
             || *algorithm == oid_registry::OID_PKCS1_RSASSAPSS
         {
             let key = rsa::pubkey::parse(&value.subjectPublicKey.data)?;
-            wrapped.public_key = serde_json::to_value(&key)?;
+            wrapped.public_key = key.serialize()?;
         }
         if *algorithm == oid_registry::OID_SIG_ED25519
             || *algorithm == oid_registry::OID_SIG_ED448
@@ -53,7 +53,7 @@ impl<'a> SubjectPublicKeyInfoAsn1<'a> {
             || *algorithm == x448
         {
             let key = ed::pubkey::parse(&value.subjectPublicKey.data)?;
-            wrapped.public_key = serde_json::to_value(&key)?;
+            wrapped.public_key = key.serialize()?;
         }
         Ok(wrapped)
     }
@@ -62,7 +62,7 @@ impl<'a> SubjectPublicKeyInfoAsn1<'a> {
 #[derive(Serialize)]
 pub struct PublicKey {
     pub algorithm: Object,
-    pub public_key: serde_json::Value,
+    pub public_key: Intermediate,
 }
 
 pub fn parse_public_key(content: &[u8]) -> Result<PublicKey> {

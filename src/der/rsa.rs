@@ -1,5 +1,5 @@
 use asn1_rs::{DerSequence, FromDer, Integer};
-use serde::Serialize;
+use serde_lite::Serialize;
 
 use crate::error::{Error, Result};
 use crate::int::{DisplayedInt, PrivateInt};

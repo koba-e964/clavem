@@ -61,7 +61,7 @@ dependencies = [
  "num-bigint",
  "oid-registry",
  "pem",
- "serde",
+ "serde-lite",
  "serde_json",
  "thiserror",
 ]
@@ -207,15 +207,22 @@ name = "serde"
 version = "1.0.136"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ce31e24b01e1e524df96f1c2fdd054405f8d7376249a5110886fb4b658484789"
+
+[[package]]
+name = "serde-lite"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a9603a7e167f1c19c1fd6d8d116b63fd6db48f4203012e1971241120ca4bcd21"
 dependencies = [
- "serde_derive",
+ "indexmap",
+ "serde",
+ "serde-lite-derive",
 ]
 
 [[package]]
-name = "serde_derive"
-version = "1.0.136"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "08597e7152fcd306f41838ed3e37be9eaeed2b61c42e2117266a554fab4662f9"
+name = "serde-lite-derive"
+version = "0.2.0"
+source = "git+https://github.com/koba-e964/serde-lite?branch=fix/result-hygiene#f3350cf940305dcb4ef35df34820963fce31bec1"
 dependencies = [
  "proc-macro2",
  "quote",

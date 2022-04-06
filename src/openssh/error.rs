@@ -7,6 +7,12 @@ pub enum Error {
         #[source]
         serde_json::Error,
     ),
+    #[error("serde-lite error")]
+    SerdeLiteError(
+        #[from]
+        #[source]
+        serde_lite::Error,
+    ),
     #[error("Parsing failed")]
     ParseError,
     #[error("UTF-8 conversion failed")]

@@ -4,7 +4,7 @@ use asn1_rs::{
     Any, BitString, DerSequence, FromDer, Integer, OptTaggedExplicit, Sequence, TaggedExplicit,
 };
 use oid_registry::OidRegistry;
-use serde::Serialize;
+use serde_lite::Serialize;
 
 use crate::der::object::Object;
 use crate::der::pubkey::{AlgorithmIdentifierAsn1, PublicKey, SubjectPublicKeyInfoAsn1};
@@ -37,12 +37,12 @@ pub struct TBSCertificate {
     #[serde(rename = "serialNumber")]
     pub serial_number: DisplayedInt,
     pub signature: Object,
-    issuer: (),
-    validity: (),
-    subject: (),
+    issuer: Option<i32>,
+    validity: Option<i32>,
+    subject: Option<i32>,
     #[serde(rename = "subjectPublicKeyInfo")]
     pub subject_pki: PublicKey,
-    issuer_uid: (),
+    issuer_uid: Option<i32>,
 }
 
 impl TBSCertificate {
@@ -52,11 +52,11 @@ impl TBSCertificate {
             version: value.version.into_inner().into(),
             serial_number: value.serialNumber.into(),
             signature: value.signature.to(registry),
-            issuer: (),
-            validity: (),
-            subject: (),
+            issuer: None,
+            validity: None,
+            subject: None,
             subject_pki: value.subjectPublicKeyInfo.to(registry)?,
-            issuer_uid: (),
+            issuer_uid: None,
         })
     }
 }
