@@ -5,6 +5,7 @@ pub mod ecdsa;
 pub mod ed25519;
 pub mod error;
 pub mod privkey;
+pub mod pubkey;
 pub mod rsa;
 
 // nom-like parsing functions

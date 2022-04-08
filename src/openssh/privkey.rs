@@ -19,7 +19,7 @@ pub struct PrivateKey {
     pub ciphername: String,
     pub kdfname: String,
     pub kdf: String,
-    pub pub_part: (),
+    pub pub_part: super::pubkey::PubPart,
     pub priv_part: PrivPart,
 }
 
@@ -37,8 +37,8 @@ pub fn parse_priv_part(content: &[u8]) -> Result<PrivPart> {
         content: serde_json::Value::String("unknown algorithm".to_string()),
         comment: "".to_string(),
     };
-    if algo == "ssh-rsa" {
-        let (content, priv_key) = super::rsa::privkey::parse(content)?;
+    if algo == "ecdsa-sha2-nistp256" {
+        let (content, priv_key) = super::ecdsa::privkey::parse(content)?;
         let (content, comment) = super::parse_bytes(content)?;
         if content.len() >= 8 {
             return Err(Error::ParseError);
@@ -64,8 +64,8 @@ pub fn parse_priv_part(content: &[u8]) -> Result<PrivPart> {
         wrapped.content = serde_json::to_value(&priv_key)?;
         wrapped.comment = String::from_utf8(comment.to_vec())?;
     }
-    if algo == "ecdsa-sha2-nistp256" {
-        let (content, priv_key) = super::ecdsa::privkey::parse(content)?;
+    if algo == "ssh-rsa" {
+        let (content, priv_key) = super::rsa::privkey::parse(content)?;
         let (content, comment) = super::parse_bytes(content)?;
         if content.len() >= 8 {
             return Err(Error::ParseError);
@@ -86,9 +86,13 @@ pub fn parse(content: &[u8]) -> Result<PrivateKey> {
     if numkeys != 1 {
         return Err(Error::ParseError);
     }
-    let (content, _pub_part) = super::parse_bytes(content)?;
+    let (content, pub_part) = super::parse_bytes(content)?;
     let (content, priv_part) = super::parse_bytes(content)?;
     if !content.is_empty() {
+        return Err(Error::ParseError);
+    }
+    let (remaining, pub_part) = super::pubkey::parse_data(pub_part)?;
+    if !remaining.is_empty() {
         return Err(Error::ParseError);
     }
     let priv_part = parse_priv_part(priv_part)?;
@@ -96,7 +100,7 @@ pub fn parse(content: &[u8]) -> Result<PrivateKey> {
         ciphername: String::from_utf8(ciphername.to_vec())?,
         kdfname: String::from_utf8(kdfname.to_vec())?,
         kdf: String::from_utf8(kdf.to_vec())?,
-        pub_part: (),
+        pub_part,
         priv_part,
     };
     Ok(wrapped)

@@ -58,6 +58,7 @@ name = "clavem"
 version = "0.1.0"
 dependencies = [
  "asn1-rs",
+ "base64",
  "num-bigint",
  "oid-registry",
  "pem",

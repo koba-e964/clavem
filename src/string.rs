@@ -31,6 +31,15 @@ impl<'a> From<BitString<'a>> for BitStr {
     }
 }
 
+impl From<&'_ [u8]> for BitStr {
+    fn from(b: &[u8]) -> Self {
+        BitStr {
+            len: b.len(),
+            unused: 0,
+        }
+    }
+}
+
 pub struct PrivateBitStr {
     pub len: usize,
     pub unused: u8,

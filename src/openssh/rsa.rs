@@ -16,6 +16,13 @@ pub struct PrivateKey {
     pub q: DisplayedInt,
 }
 
+// https://github.com/openssh/openssh-portable/blob/V_8_9_P1/sshkey.c#L2410-L2423
+#[derive(Serialize)]
+pub struct PublicKey {
+    pub e: DisplayedInt,
+    pub n: DisplayedInt,
+}
+
 pub mod privkey {
     use super::*;
 
@@ -33,6 +40,20 @@ pub mod privkey {
             iqmp: BigInt::from_bytes_be(Sign::Plus, iqmp).into(),
             p: BigInt::from_bytes_be(Sign::Plus, p).into(),
             q: BigInt::from_bytes_be(Sign::Plus, q).into(),
+        };
+        Ok((content, wrapped))
+    }
+}
+
+pub mod pubkey {
+    use super::*;
+
+    pub fn parse(content: &[u8]) -> Result<(&[u8], PublicKey)> {
+        let (content, e) = super::super::parse_bytes(content)?;
+        let (content, n) = super::super::parse_bytes(content)?;
+        let wrapped = PublicKey {
+            e: BigInt::from_bytes_be(Sign::Plus, e).into(),
+            n: BigInt::from_bytes_be(Sign::Plus, n).into(),
         };
         Ok((content, wrapped))
     }

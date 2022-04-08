@@ -15,6 +15,12 @@ pub enum Error {
         #[source]
         std::string::FromUtf8Error,
     ),
+    #[error("base64 decoding failed")]
+    Base64DecodeError(
+        #[from]
+        #[source]
+        base64::DecodeError,
+    ),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

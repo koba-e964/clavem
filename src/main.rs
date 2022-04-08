@@ -12,6 +12,9 @@ use clavem::openssh;
 
 fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
     let result = pem::parse_many(&data)?;
+    if result.is_empty() {
+        return Err(pem::PemError::MissingData);
+    }
     for pem in result {
         #[cfg(feature = "der")]
         if pem.tag == "PUBLIC KEY" {
@@ -107,13 +110,29 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
     Ok(())
 }
 
-fn main() -> Result<(), ()> {
+fn main() -> Result<(), &'static str> {
     let args: Vec<String> = env::args().into_iter().collect();
     let filename = args[1].clone();
     let data = fs::read(filename).expect("Unable to read file");
+    if let Ok(data) = std::str::from_utf8(&data) {
+        if let Ok(value) = openssh::pubkey::parse(data) {
+            #[derive(Serialize)]
+            struct Wrapping<'a> {
+                #[serde(rename = "type")]
+                ty: &'static str,
+                value: openssh::pubkey::PublicKey<'a>,
+            }
+            let wrapped = Wrapping {
+                ty: "OPENSSH public key",
+                value,
+            };
+            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+
+            return Ok(());
+        }
+    }
     if parse_as_pem(&data).is_ok() {
         return Ok(());
     }
-    eprintln!("Unsupported!");
-    Err(())
+    Err("Unsupported!")
 }

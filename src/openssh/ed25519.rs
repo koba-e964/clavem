@@ -35,3 +35,14 @@ pub mod privkey {
         Ok((content, wrapped))
     }
 }
+
+pub mod pubkey {
+    use crate::string::BitStr;
+
+    use super::*;
+
+    pub fn parse(content: &[u8]) -> Result<(&[u8], BitStr)> {
+        let (content, pk) = super::super::parse_bytes(content)?;
+        Ok((content, BitStr::from(pk)))
+    }
+}
