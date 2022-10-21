@@ -5,7 +5,7 @@ CHECKS=$(OBJECTS:%.pub=%.check)
 all: verify $(CHECKS)
 
 %.pub: %
-	ssh-keygen -y -f $< >$@ 
+	if ! ssh-keygen -y -f $< >$@; then rm $@; exit 1; fi
 
 verify: $(OBJECTS) sha256sum.txt
 	sha256sum --check sha256sum.txt
