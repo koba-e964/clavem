@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use crate::int::DisplayedInt;
+use crate::{int::DisplayedInt, string::BitStr};
 
 use super::error::{Error, Result};
 
@@ -18,7 +18,7 @@ pub struct PrivPart {
 pub struct PrivateKey {
     pub ciphername: String,
     pub kdfname: String,
-    pub kdf: String,
+    pub kdf: BitStr,
     pub pub_part: super::pubkey::PubPart,
     pub priv_part: PrivPart,
 }
@@ -95,13 +95,22 @@ pub fn parse(content: &[u8]) -> Result<PrivateKey> {
     if !remaining.is_empty() {
         return Err(Error::ParseError);
     }
-    let priv_part = parse_priv_part(priv_part)?;
-    let wrapped = PrivateKey {
+
+    let mut wrapped = PrivateKey {
         ciphername: String::from_utf8(ciphername.to_vec())?,
         kdfname: String::from_utf8(kdfname.to_vec())?,
-        kdf: String::from_utf8(kdf.to_vec())?,
+        kdf: kdf.into(),
         pub_part,
-        priv_part,
+        priv_part: PrivPart {
+            checksum: DisplayedInt::Small(0.into()),
+            algo: "unknown".to_owned(),
+            content: serde_json::Value::Null,
+            comment: "encrypted key".to_owned(),
+        },
     };
+    if wrapped.ciphername == "none" {
+        let priv_part = parse_priv_part(priv_part)?;
+        wrapped.priv_part = priv_part;
+    }
     Ok(wrapped)
 }

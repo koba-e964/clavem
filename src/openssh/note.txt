@@ -1,0 +1,10 @@
+https://github.com/openssh/openssh-portable/blob/V_9_1_P1/sshbuf.c
+sshbuf_consume(struct sshbuf *buf, size_t len)
+len バイトだけ読み捨てる。
+buf->off += len; によってポインタが進む。
+
+https://github.com/openssh/openssh-portable/blob/V_9_1_P1/sshbuf-getput-basic.c
+
+sshbuf_peek_string_direct(const struct sshbuf *buf, const u_char **valp,
+    size_t *lenp)
+4 バイトの整数 (len) を読んだ後、len バイトだけ読む。buf->off はそのまま。
