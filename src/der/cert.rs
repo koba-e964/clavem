@@ -11,6 +11,7 @@ use crate::der::pubkey::{AlgorithmIdentifierAsn1, PublicKey, SubjectPublicKeyInf
 use crate::der::registry;
 use crate::error::{Error, Result};
 use crate::int::DisplayedInt;
+use crate::span::Span;
 use crate::string::BitStr;
 
 #[derive(DerSequence)]
@@ -49,8 +50,14 @@ impl TBSCertificate {
     fn try_from(value: TBSCertificateAsn1, registry: &OidRegistry) -> Result<Self> {
         eprintln!("{:?}", value.extensions);
         Ok(TBSCertificate {
-            version: value.version.into_inner().into(),
-            serial_number: value.serialNumber.into(),
+            version: DisplayedInt::new(
+                value.version.into_inner().as_bigint().into(),
+                Span::new(0, 0),
+            ), // TODO span
+            serial_number: DisplayedInt::new(
+                value.serialNumber.as_bigint().into(),
+                Span::new(0, 0),
+            ), // TODO span
             signature: value.signature.to(registry),
             issuer: (),
             validity: (),

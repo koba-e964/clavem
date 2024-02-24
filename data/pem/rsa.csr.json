@@ -2,7 +2,13 @@
   "type": "PEM certificate request",
   "value": {
     "certificationRequestInfo": {
-      "version": "0x0",
+      "version": {
+        "value": "0x0",
+        "span": {
+          "start": 0,
+          "end": 0
+        }
+      },
       "subject": [
         [
           {
@@ -50,8 +56,20 @@
       "subjectPKInfo": {
         "algorithm": "rsaEncryption (1.2.840.113549.1.1.1)",
         "public_key": {
-          "modulus": "(integer: 256 bytes)",
-          "exponent": "0x10001"
+          "modulus": {
+            "value": "(integer: 256 bytes)",
+            "span": {
+              "start": 0,
+              "end": 0
+            }
+          },
+          "exponent": {
+            "value": "0x10001",
+            "span": {
+              "start": 0,
+              "end": 0
+            }
+          }
         }
       }
     },

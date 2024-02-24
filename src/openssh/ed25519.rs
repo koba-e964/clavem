@@ -2,6 +2,7 @@ use num_bigint::{BigInt, Sign};
 use serde::Serialize;
 
 use crate::int::DisplayedInt;
+use crate::span::Span;
 
 use super::error::Result;
 
@@ -21,18 +22,30 @@ pub struct PrivateKey {
 pub mod privkey {
     use super::*;
 
-    pub fn parse(content: &[u8]) -> Result<(&[u8], PrivateKey)> {
-        let (content, pk) = super::super::parse_bytes(content)?;
-        let (content, sk) = super::super::parse_bytes(content)?;
+    pub fn parse(content: &[u8], offset: usize) -> Result<(&[u8], Span, PrivateKey)> {
+        let (content, pk_span, pk) = super::super::parse_bytes(content, offset)?;
+        let (content, sk_span, sk) = super::super::parse_bytes(content, pk_span.end)?;
         let sk = Sk {
-            priv_part: BigInt::from_bytes_be(Sign::Plus, &sk[..32]).into(),
-            pub_part: BigInt::from_bytes_be(Sign::Plus, &sk[32..]).into(),
+            priv_part: DisplayedInt::new(
+                BigInt::from_bytes_be(Sign::Plus, &sk[..32]),
+                Span {
+                    start: sk_span.start + 4,
+                    end: sk_span.start + 36,
+                },
+            ),
+            pub_part: DisplayedInt::new(
+                BigInt::from_bytes_be(Sign::Plus, &sk[32..]),
+                Span {
+                    start: sk_span.start + 36,
+                    ..sk_span
+                },
+            ),
         };
         let wrapped = PrivateKey {
-            pk: BigInt::from_bytes_be(Sign::Plus, pk).into(),
+            pk: DisplayedInt::new(BigInt::from_bytes_be(Sign::Plus, pk), pk_span),
             sk,
         };
-        Ok((content, wrapped))
+        Ok((content, Span::new(offset, sk_span.end), wrapped))
     }
 }
 
@@ -41,8 +54,8 @@ pub mod pubkey {
 
     use super::*;
 
-    pub fn parse(content: &[u8]) -> Result<(&[u8], BitStr)> {
-        let (content, pk) = super::super::parse_bytes(content)?;
-        Ok((content, BitStr::from(pk)))
+    pub fn parse(content: &[u8], offset: usize) -> Result<(&[u8], Span, BitStr)> {
+        let (content, pk_span, pk) = super::super::parse_bytes(content, offset)?;
+        Ok((content, pk_span, BitStr::from(pk)))
     }
 }

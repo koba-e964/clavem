@@ -3,8 +3,20 @@
   "value": {
     "algorithm": "rsassa-pss (1.2.840.113549.1.1.10)",
     "public_key": {
-      "modulus": "(integer: 256 bytes)",
-      "exponent": "0x10001"
+      "modulus": {
+        "value": "(integer: 256 bytes)",
+        "span": {
+          "start": 0,
+          "end": 0
+        }
+      },
+      "exponent": {
+        "value": "0x10001",
+        "span": {
+          "start": 0,
+          "end": 0
+        }
+      }
     }
   }
 }

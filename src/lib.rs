@@ -4,4 +4,5 @@ pub mod error;
 pub mod int;
 #[cfg(feature = "openssh")]
 pub mod openssh;
+pub mod span;
 pub mod string;

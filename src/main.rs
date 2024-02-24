@@ -93,7 +93,7 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
         }
         #[cfg(feature = "openssh")]
         if pem.tag == "OPENSSH PRIVATE KEY" {
-            let value = openssh::privkey::parse(&pem.contents).unwrap();
+            let value = openssh::privkey::parse(&pem.contents, 0).unwrap();
             #[derive(Serialize)]
             struct Wrapping {
                 #[serde(rename = "type")]

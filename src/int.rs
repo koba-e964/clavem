@@ -2,55 +2,72 @@ use asn1_rs::Integer;
 use num_bigint::BigInt;
 use serde::Serialize;
 
+use crate::span::Span;
+
 /// Displayed integers. If the value is too big, its summary is displayed instead.
-pub enum DisplayedInt {
+#[derive(Serialize)]
+pub struct DisplayedInt {
+    value: DisplayedIntInner,
+    span: Span,
+}
+
+impl DisplayedInt {
+    pub fn new(value: BigInt, span: Span) -> Self {
+        Self {
+            value: DisplayedIntInner::from_bigint(value, 4), // an arbitrary threshold
+            span,
+        }
+    }
+}
+
+pub enum DisplayedIntInner {
     Big {
         len: usize, // size in bytes
     },
     Small(BigInt),
 }
 
-impl DisplayedInt {
+impl DisplayedIntInner {
     pub fn from_bigint(value: BigInt, threshold: usize) -> Self {
         if value.bits() >= 8 * threshold as u64 {
-            DisplayedInt::Big {
+            DisplayedIntInner::Big {
                 len: ((value.bits() + 7) / 8) as usize,
             }
         } else {
-            DisplayedInt::Small(value)
+            DisplayedIntInner::Small(value)
         }
     }
 }
 
-impl Serialize for DisplayedInt {
+impl Serialize for DisplayedIntInner {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
     {
         match *self {
-            DisplayedInt::Big { len } => {
+            DisplayedIntInner::Big { len } => {
                 serializer.serialize_str(&format!("(integer: {} bytes)", len))
             }
-            DisplayedInt::Small(ref value) => {
+            DisplayedIntInner::Small(ref value) => {
                 serializer.serialize_str(&("0x".to_string() + &value.to_str_radix(16)))
             }
         }
     }
 }
 
-impl From<BigInt> for DisplayedInt {
+impl From<BigInt> for DisplayedIntInner {
     fn from(value: BigInt) -> Self {
         Self::from_bigint(value, 4) // an arbitrary threshold
     }
 }
 
-impl From<u32> for DisplayedInt {
+impl From<u32> for DisplayedIntInner {
     fn from(value: u32) -> Self {
-        DisplayedInt::Small(value.into())
+        DisplayedIntInner::Small(value.into())
     }
 }
 
-impl<'a> From<Integer<'a>> for DisplayedInt {
+impl<'a> From<Integer<'a>> for DisplayedIntInner {
     fn from(value: Integer<'a>) -> Self {
         value.as_bigint().into()
     }

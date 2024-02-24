@@ -2,6 +2,7 @@ use num_bigint::{BigInt, Sign};
 use serde::Serialize;
 
 use crate::int::DisplayedInt;
+use crate::span::Span;
 
 use super::error::Result;
 
@@ -27,39 +28,40 @@ pub struct PublicKey {
 pub mod privkey {
     use super::*;
 
-    pub fn parse(content: &[u8]) -> Result<(&[u8], PrivateKey)> {
-        let (content, p) = super::super::parse_bytes(content)?;
-        let (content, q) = super::super::parse_bytes(content)?;
-        let (content, g) = super::super::parse_bytes(content)?;
-        let (content, pub_key) = super::super::parse_bytes(content)?;
-        let (content, priv_key) = super::super::parse_bytes(content)?;
+    pub fn parse(content: &[u8], offset: usize) -> Result<(&[u8], Span, PrivateKey)> {
+        let (content, p_span, p) = super::super::parse_bytes(content, offset)?;
+        let (content, q_span, q) = super::super::parse_bytes(content, p_span.end)?;
+        let (content, g_span, g) = super::super::parse_bytes(content, q_span.end)?;
+        let (content, pub_key_span, pub_key) = super::super::parse_bytes(content, g_span.end)?;
+        let (content, priv_key_span, priv_key) =
+            super::super::parse_bytes(content, pub_key_span.end)?;
 
         let wrapped = PrivateKey {
-            p: BigInt::from_bytes_be(Sign::Plus, p).into(),
-            q: BigInt::from_bytes_be(Sign::Plus, q).into(),
-            g: BigInt::from_bytes_be(Sign::Plus, g).into(),
-            pub_key: BigInt::from_bytes_be(Sign::Plus, pub_key).into(),
-            priv_key: BigInt::from_bytes_be(Sign::Plus, priv_key).into(),
+            p: DisplayedInt::new(BigInt::from_bytes_be(Sign::Plus, p), p_span),
+            q: DisplayedInt::new(BigInt::from_bytes_be(Sign::Plus, q), q_span),
+            g: DisplayedInt::new(BigInt::from_bytes_be(Sign::Plus, g), g_span),
+            pub_key: DisplayedInt::new(BigInt::from_bytes_be(Sign::Plus, pub_key), pub_key_span),
+            priv_key: DisplayedInt::new(BigInt::from_bytes_be(Sign::Plus, priv_key), priv_key_span),
         };
-        Ok((content, wrapped))
+        Ok((content, Span::new(offset, priv_key_span.end), wrapped))
     }
 }
 
 pub mod pubkey {
     use super::*;
 
-    pub fn parse(content: &[u8]) -> Result<(&[u8], PublicKey)> {
-        let (content, p) = super::super::parse_bytes(content)?;
-        let (content, q) = super::super::parse_bytes(content)?;
-        let (content, g) = super::super::parse_bytes(content)?;
-        let (content, pub_key) = super::super::parse_bytes(content)?;
+    pub fn parse(content: &[u8], offset: usize) -> Result<(&[u8], Span, PublicKey)> {
+        let (content, p_span, p) = super::super::parse_bytes(content, offset)?;
+        let (content, q_span, q) = super::super::parse_bytes(content, p_span.end)?;
+        let (content, g_span, g) = super::super::parse_bytes(content, q_span.end)?;
+        let (content, pub_key_span, pub_key) = super::super::parse_bytes(content, g_span.end)?;
 
         let wrapped = PublicKey {
-            p: BigInt::from_bytes_be(Sign::Plus, p).into(),
-            q: BigInt::from_bytes_be(Sign::Plus, q).into(),
-            g: BigInt::from_bytes_be(Sign::Plus, g).into(),
-            pub_key: BigInt::from_bytes_be(Sign::Plus, pub_key).into(),
+            p: DisplayedInt::new(BigInt::from_bytes_be(Sign::Plus, p), p_span),
+            q: DisplayedInt::new(BigInt::from_bytes_be(Sign::Plus, q), q_span),
+            g: DisplayedInt::new(BigInt::from_bytes_be(Sign::Plus, g), g_span),
+            pub_key: DisplayedInt::new(BigInt::from_bytes_be(Sign::Plus, pub_key), pub_key_span),
         };
-        Ok((content, wrapped))
+        Ok((content, Span::new(offset, pub_key_span.end), wrapped))
     }
 }

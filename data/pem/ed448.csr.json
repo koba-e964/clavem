@@ -2,7 +2,13 @@
   "type": "PEM certificate request",
   "value": {
     "certificationRequestInfo": {
-      "version": "0x0",
+      "version": {
+        "value": "0x0",
+        "span": {
+          "start": 0,
+          "end": 0
+        }
+      },
       "subject": [
         [
           {

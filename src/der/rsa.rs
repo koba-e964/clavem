@@ -3,6 +3,7 @@ use serde::Serialize;
 
 use crate::error::{Error, Result};
 use crate::int::{DisplayedInt, PrivateInt};
+use crate::span::Span;
 
 #[derive(Serialize)]
 pub struct PublicKey {
@@ -87,8 +88,11 @@ pub mod privkey {
                 .collect()
         };
         Ok(PrivateKey {
-            modulus: value.modulus.into(),
-            public_exponent: value.publicExponent.into(),
+            modulus: DisplayedInt::new(value.modulus.as_bigint().into(), Span::new(0, 0)), // TODO: span
+            public_exponent: DisplayedInt::new(
+                value.publicExponent.as_bigint().into(),
+                Span::new(0, 0),
+            ), // TODO: span
             private_exponent: value.privateExponent.into(),
             prime1: value.prime1.into(),
             prime2: value.prime2.into(),
@@ -114,8 +118,8 @@ pub mod pubkey {
     pub fn parse(content: &[u8]) -> Result<PublicKey> {
         let (_, key) = RsaPublicKeyAsn1::from_der(content).unwrap();
         Ok(PublicKey {
-            modulus: key.modulus.into(),
-            exponent: key.exponent.into(),
+            modulus: DisplayedInt::new(key.modulus.as_bigint().into(), Span::new(0, 0)), // TODO: span
+            exponent: DisplayedInt::new(key.exponent.as_bigint().into(), Span::new(0, 0)), // TODO: span
         })
     }
 }

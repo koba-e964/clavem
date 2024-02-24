@@ -8,6 +8,7 @@ use crate::der::pubkey::{AlgorithmIdentifierAsn1, PublicKey, SubjectPublicKeyInf
 use crate::der::registry;
 use crate::error::{Error, Result};
 use crate::int::DisplayedInt;
+use crate::span::Span;
 use crate::string::BitStr;
 
 // https://www.itu.int/ITU-T/formal-language/itu-t/x/x501/2012/InformationFramework.html#InformationFramework.AttributeTypeAndValue
@@ -74,7 +75,7 @@ impl CertificationRequestInfo {
             })
             .collect::<asn1_rs::Result<Vec<_>>>()?;
         Ok(CertificationRequestInfo {
-            version: value.version.into(),
+            version: DisplayedInt::new(value.version.as_bigint().into(), Span::new(0, 0)), // TODO span
             subject,
             subject_pk_info: value.subjectPKInfo.to(registry)?,
         })
