@@ -45,7 +45,7 @@ impl<'a> SubjectPublicKeyInfoAsn1<'a> {
             || *algorithm == oid_registry::OID_PKCS1_RSASSAPSS
         {
             let key = rsa::pubkey::parse(&value.subjectPublicKey.data)?;
-            wrapped.public_key = serde_json::to_value(&key)?;
+            wrapped.public_key = serde_json::to_value(key)?;
         }
         if *algorithm == oid_registry::OID_SIG_ED25519
             || *algorithm == oid_registry::OID_SIG_ED448
@@ -53,7 +53,7 @@ impl<'a> SubjectPublicKeyInfoAsn1<'a> {
             || *algorithm == x448
         {
             let key = ed::pubkey::parse(&value.subjectPublicKey.data)?;
-            wrapped.public_key = serde_json::to_value(&key)?;
+            wrapped.public_key = serde_json::to_value(key)?;
         }
         Ok(wrapped)
     }

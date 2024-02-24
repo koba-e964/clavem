@@ -31,14 +31,14 @@ pub fn parse_data(content: &[u8], offset: usize) -> Result<(&[u8], Span, PubPart
         let (remaining, pub_key_span, pub_key) =
             super::ecdsa::pubkey::parse(content, algo_span.end)?;
         content = remaining;
-        wrapped.content = serde_json::to_value(&pub_key)?;
+        wrapped.content = serde_json::to_value(pub_key)?;
         parsed = true;
         key_span_end = pub_key_span.end;
     }
     if algo == "ssh-dss" {
         let (remaining, pub_key_span, pub_key) = super::dsa::pubkey::parse(content, algo_span.end)?;
         content = remaining;
-        wrapped.content = serde_json::to_value(&pub_key)?;
+        wrapped.content = serde_json::to_value(pub_key)?;
         parsed = true;
         key_span_end = pub_key_span.end;
     }
@@ -46,14 +46,14 @@ pub fn parse_data(content: &[u8], offset: usize) -> Result<(&[u8], Span, PubPart
         let (remaining, pub_key_span, pub_key) =
             super::ed25519::pubkey::parse(content, algo_span.end)?;
         content = remaining;
-        wrapped.content = serde_json::to_value(&pub_key)?;
+        wrapped.content = serde_json::to_value(pub_key)?;
         parsed = true;
         key_span_end = pub_key_span.end;
     }
     if algo == "ssh-rsa" {
         let (remaining, pub_key_span, pub_key) = super::rsa::pubkey::parse(content, algo_span.end)?;
         content = remaining;
-        wrapped.content = serde_json::to_value(&pub_key)?;
+        wrapped.content = serde_json::to_value(pub_key)?;
         parsed = true;
         key_span_end = pub_key_span.end;
     }

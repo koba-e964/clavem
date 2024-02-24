@@ -88,11 +88,8 @@ pub mod privkey {
                 .collect()
         };
         Ok(PrivateKey {
-            modulus: DisplayedInt::new(value.modulus.as_bigint().into(), Span::new(0, 0)), // TODO: span
-            public_exponent: DisplayedInt::new(
-                value.publicExponent.as_bigint().into(),
-                Span::new(0, 0),
-            ), // TODO: span
+            modulus: DisplayedInt::new(value.modulus.as_bigint(), Span::new(0, 0)), // TODO: span
+            public_exponent: DisplayedInt::new(value.publicExponent.as_bigint(), Span::new(0, 0)), // TODO: span
             private_exponent: value.privateExponent.into(),
             prime1: value.prime1.into(),
             prime2: value.prime2.into(),
@@ -118,8 +115,8 @@ pub mod pubkey {
     pub fn parse(content: &[u8]) -> Result<PublicKey> {
         let (_, key) = RsaPublicKeyAsn1::from_der(content).unwrap();
         Ok(PublicKey {
-            modulus: DisplayedInt::new(key.modulus.as_bigint().into(), Span::new(0, 0)), // TODO: span
-            exponent: DisplayedInt::new(key.exponent.as_bigint().into(), Span::new(0, 0)), // TODO: span
+            modulus: DisplayedInt::new(key.modulus.as_bigint(), Span::new(0, 0)), // TODO: span
+            exponent: DisplayedInt::new(key.exponent.as_bigint(), Span::new(0, 0)), // TODO: span
         })
     }
 }

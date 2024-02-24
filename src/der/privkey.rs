@@ -44,7 +44,7 @@ pub fn parse_private_key(content: &[u8]) -> Result<PrivateKey> {
         || *algorithm == oid_registry::OID_PKCS1_RSASSAPSS
     {
         let key = rsa::privkey::parse(key.privateKey.as_cow())?;
-        wrapped.private_key = serde_json::to_value(&key)?;
+        wrapped.private_key = serde_json::to_value(key)?;
     }
     if *algorithm == oid_registry::OID_SIG_ED25519
         || *algorithm == oid_registry::OID_SIG_ED448
@@ -52,7 +52,7 @@ pub fn parse_private_key(content: &[u8]) -> Result<PrivateKey> {
         || *algorithm == x448
     {
         let key = ed::privkey::parse(key.privateKey.as_cow())?;
-        wrapped.private_key = serde_json::to_value(&key)?;
+        wrapped.private_key = serde_json::to_value(key)?;
     }
     Ok(wrapped)
 }

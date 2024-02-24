@@ -75,7 +75,7 @@ impl CertificationRequestInfo {
             })
             .collect::<asn1_rs::Result<Vec<_>>>()?;
         Ok(CertificationRequestInfo {
-            version: DisplayedInt::new(value.version.as_bigint().into(), Span::new(0, 0)), // TODO span
+            version: DisplayedInt::new(value.version.as_bigint(), Span::new(0, 0)), // TODO span
             subject,
             subject_pk_info: value.subjectPKInfo.to(registry)?,
         })

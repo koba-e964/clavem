@@ -46,7 +46,7 @@ pub fn parse_priv_part(content: &[u8], offset: usize) -> Result<PrivPart> {
         if content.len() >= 8 {
             return Err(Error::ParseError);
         }
-        wrapped.content = serde_json::to_value(&priv_key)?;
+        wrapped.content = serde_json::to_value(priv_key)?;
         wrapped.comment = String::from_utf8(comment.to_vec())?;
         wrapped.span = priv_key_span;
     }
@@ -57,7 +57,7 @@ pub fn parse_priv_part(content: &[u8], offset: usize) -> Result<PrivPart> {
         if content.len() >= 8 {
             return Err(Error::ParseError);
         }
-        wrapped.content = serde_json::to_value(&priv_key)?;
+        wrapped.content = serde_json::to_value(priv_key)?;
         wrapped.comment = String::from_utf8(comment.to_vec())?;
         wrapped.span = priv_key_span;
     }
@@ -68,7 +68,7 @@ pub fn parse_priv_part(content: &[u8], offset: usize) -> Result<PrivPart> {
         if content.len() >= 8 {
             return Err(Error::ParseError);
         }
-        wrapped.content = serde_json::to_value(&priv_key)?;
+        wrapped.content = serde_json::to_value(priv_key)?;
         wrapped.comment = String::from_utf8(comment.to_vec())?;
         wrapped.span = priv_key_span;
     }
@@ -79,7 +79,7 @@ pub fn parse_priv_part(content: &[u8], offset: usize) -> Result<PrivPart> {
         if content.len() >= 8 {
             return Err(Error::ParseError);
         }
-        wrapped.content = serde_json::to_value(&priv_key)?;
+        wrapped.content = serde_json::to_value(priv_key)?;
         wrapped.comment = String::from_utf8(comment.to_vec())?;
         wrapped.span = priv_key_span;
     }

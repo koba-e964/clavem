@@ -50,14 +50,8 @@ impl TBSCertificate {
     fn try_from(value: TBSCertificateAsn1, registry: &OidRegistry) -> Result<Self> {
         eprintln!("{:?}", value.extensions);
         Ok(TBSCertificate {
-            version: DisplayedInt::new(
-                value.version.into_inner().as_bigint().into(),
-                Span::new(0, 0),
-            ), // TODO span
-            serial_number: DisplayedInt::new(
-                value.serialNumber.as_bigint().into(),
-                Span::new(0, 0),
-            ), // TODO span
+            version: DisplayedInt::new(value.version.into_inner().as_bigint(), Span::new(0, 0)), // TODO span
+            serial_number: DisplayedInt::new(value.serialNumber.as_bigint(), Span::new(0, 0)), // TODO span
             signature: value.signature.to(registry),
             issuer: (),
             validity: (),

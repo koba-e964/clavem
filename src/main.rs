@@ -11,7 +11,7 @@ use clavem::der::{cert, csr, rsa};
 use clavem::openssh;
 
 fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
-    let result = pem::parse_many(&data)?;
+    let result = pem::parse_many(data)?;
     if result.is_empty() {
         return Err(pem::PemError::MissingData);
     }
@@ -111,7 +111,7 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
 }
 
 fn main() -> Result<(), &'static str> {
-    let args: Vec<String> = env::args().into_iter().collect();
+    let args: Vec<String> = env::args().collect();
     let filename = args[1].clone();
     let data = fs::read(filename).expect("Unable to read file");
     if let Ok(data) = std::str::from_utf8(&data) {
