@@ -1,7 +1,8 @@
 #![allow(non_snake_case)]
 
 use asn1_rs::{
-    Any, BitString, DerSequence, FromDer, Integer, OptTaggedExplicit, Sequence, TaggedExplicit,
+    Any, BitString, DerSequence, Error as Asn1Error, FromDer, Integer, OptTaggedExplicit, Sequence,
+    TaggedExplicit,
 };
 use oid_registry::OidRegistry;
 use serde::Serialize;
@@ -16,7 +17,7 @@ use crate::string::BitStr;
 
 #[derive(DerSequence)]
 struct TBSCertificateAsn1<'a> {
-    version: TaggedExplicit<Integer<'a>, 0>,
+    version: TaggedExplicit<Integer<'a>, Asn1Error, 0>,
     serialNumber: Integer<'a>,
     signature: AlgorithmIdentifierAsn1<'a>,
     #[allow(unused)]
@@ -29,7 +30,7 @@ struct TBSCertificateAsn1<'a> {
     // issuerUniqueID: OptTaggedImplicit<BitString<'a>, 1>,
     // subjectUniqueID: Option<Any<'a>>, //TaggedValue<BitString<'a>, Implicit, 0b10 /* ContextSpecific */, 2>,
     #[allow(unused)]
-    extensions: OptTaggedExplicit<Any<'a>, 3>,
+    extensions: OptTaggedExplicit<Any<'a>, Asn1Error, 3>,
 }
 
 #[derive(Serialize)]

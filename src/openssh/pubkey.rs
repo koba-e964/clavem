@@ -1,3 +1,4 @@
+use base64::Engine;
 use serde::Serialize;
 
 use crate::span::Span;
@@ -86,7 +87,7 @@ pub fn parse(key: &str) -> Result<PublicKey> {
     let algo = s[0];
     let data = s[1];
     let comment = s.get(2).copied();
-    let data = base64::decode(data)?;
+    let data = base64::prelude::BASE64_STANDARD.decode(data)?;
     let (remaining, _span, data) = parse_data(&data, 0)?;
     if !remaining.is_empty() || data.algo != algo {
         return Err(Error::ParseError);

@@ -5,10 +5,10 @@ edition = "2021"
 description = "`clavem` reads a key and displays contained data."
 
 [dependencies]
-pem = "1"
-asn1-rs = { version = "0.3", features = ["bigint"] }
-base64 = "0.13"
-oid-registry = { version = "0.4", features = ["crypto", "kdf"] }
+pem = "3"
+asn1-rs = { version = "0.5", features = ["bigint"] }
+base64 = "0.21"
+oid-registry = { version = "0.6", features = ["crypto", "kdf"] }
 num-bigint = "0.4"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
@@ -29,4 +29,4 @@ strip = "symbols"
 
 [profile.release-cargo-bloat]
 inherits = "release"
-strip = "debuginfo" # "symbols" prevents cargo-bloat from displaying crate-wise info.
+strip = "debuginfo"  # "symbols" prevents cargo-bloat from displaying crate-wise info.

@@ -17,8 +17,8 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
     }
     for pem in result {
         #[cfg(feature = "der")]
-        if pem.tag == "PUBLIC KEY" {
-            let value = parse_public_key(&pem.contents).unwrap();
+        if pem.tag() == "PUBLIC KEY" {
+            let value = parse_public_key(pem.contents()).unwrap();
             #[derive(Serialize)]
             struct Wrapping {
                 #[serde(rename = "type")]
@@ -32,8 +32,8 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
             println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
         }
         #[cfg(feature = "der")]
-        if pem.tag == "RSA PRIVATE KEY" {
-            let value = rsa::privkey::parse(&pem.contents).unwrap();
+        if pem.tag() == "RSA PRIVATE KEY" {
+            let value = rsa::privkey::parse(pem.contents()).unwrap();
             #[derive(Serialize)]
             struct Wrapping {
                 #[serde(rename = "type")]
@@ -47,8 +47,8 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
             println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
         }
         #[cfg(feature = "der")]
-        if pem.tag == "PRIVATE KEY" {
-            let value = parse_private_key(&pem.contents).unwrap();
+        if pem.tag() == "PRIVATE KEY" {
+            let value = parse_private_key(pem.contents()).unwrap();
             #[derive(Serialize)]
             struct Wrapping {
                 #[serde(rename = "type")]
@@ -62,8 +62,8 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
             println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
         }
         #[cfg(feature = "der")]
-        if pem.tag == "CERTIFICATE" {
-            let value = cert::parse(&pem.contents).unwrap();
+        if pem.tag() == "CERTIFICATE" {
+            let value = cert::parse(pem.contents()).unwrap();
             #[derive(Serialize)]
             struct Wrapping {
                 #[serde(rename = "type")]
@@ -77,8 +77,8 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
             println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
         }
         #[cfg(feature = "der")]
-        if pem.tag == "CERTIFICATE REQUEST" {
-            let value = csr::parse_csr(&pem.contents).unwrap();
+        if pem.tag() == "CERTIFICATE REQUEST" {
+            let value = csr::parse_csr(pem.contents()).unwrap();
             #[derive(Serialize)]
             struct Wrapping {
                 #[serde(rename = "type")]
@@ -92,8 +92,8 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
             println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
         }
         #[cfg(feature = "openssh")]
-        if pem.tag == "OPENSSH PRIVATE KEY" {
-            let value = openssh::privkey::parse(&pem.contents, 0).unwrap();
+        if pem.tag() == "OPENSSH PRIVATE KEY" {
+            let value = openssh::privkey::parse(pem.contents(), 0).unwrap();
             #[derive(Serialize)]
             struct Wrapping {
                 #[serde(rename = "type")]
