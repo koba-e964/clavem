@@ -1,9 +1,12 @@
 use base64::Engine;
 use serde::Serialize;
 
-use crate::span::Span;
+use crate::{span::Span, string::BitStr};
 
-use super::error::{Error, Result};
+use super::{
+    cert::PublicKeyCertificate,
+    error::{Error, Result},
+};
 
 #[derive(Serialize)]
 pub struct PubPart {
@@ -57,6 +60,93 @@ pub fn parse_data(content: &[u8], offset: usize) -> Result<(&[u8], Span, PubPart
         wrapped.content = serde_json::to_value(pub_key)?;
         parsed = true;
         key_span_end = pub_key_span.end;
+    }
+    if let Some(algo_inner) = algo.strip_suffix("-cert-v01@openssh.com") {
+        // Certificates
+        // Format: https://github.com/openssh/openssh-portable/blob/V_9_1_P1/PROTOCOL.certkeys
+        parsed = true;
+        let (mut remaining, nonce_span, nonce) = super::parse_bytes(content, algo_span.end)?;
+        let mut wrapped2 = PubPart {
+            algo: algo.clone(),
+            content: serde_json::Value::Null,
+            span: Span::new(offset, content.len() + offset),
+        };
+        let mut parsed = false;
+        let mut key_span_end2 = 0;
+        if algo_inner == "ecdsa-sha2-nistp256" {
+            let (content, pub_key_span, pub_key) =
+                super::ecdsa::pubkey::parse(remaining, nonce_span.end)?;
+            remaining = content;
+            wrapped2.content = serde_json::to_value(pub_key)?;
+            parsed = true;
+            key_span_end2 = pub_key_span.end;
+        }
+        if algo_inner == "ssh-dss" {
+            let (content, pub_key_span, pub_key) =
+                super::dsa::pubkey::parse(remaining, nonce_span.end)?;
+            remaining = content;
+            wrapped2.content = serde_json::to_value(pub_key)?;
+            parsed = true;
+            key_span_end2 = pub_key_span.end;
+        }
+        if algo_inner == "ssh-ed25519" {
+            let (content, pub_key_span, pub_key) =
+                super::ed25519::pubkey::parse(remaining, nonce_span.end)?;
+            remaining = content;
+            wrapped2.content = serde_json::to_value(pub_key)?;
+            parsed = true;
+            key_span_end2 = pub_key_span.end;
+        }
+        if algo_inner == "ssh-rsa" {
+            let (content, pub_key_span, pub_key) =
+                super::rsa::pubkey::parse(remaining, nonce_span.end)?;
+            remaining = content;
+            wrapped2.content = serde_json::to_value(pub_key)?;
+            parsed = true;
+            key_span_end2 = pub_key_span.end;
+        }
+        if !parsed {
+            return Err(Error::ParseError);
+        }
+        wrapped2.span = Span::new(nonce_span.end, key_span_end2);
+        let (remaining, serial_span, serial) = super::parse_u64(remaining, key_span_end2)?;
+        let (remaining, type_span, type_) = super::parse_u32(remaining, serial_span.end)?;
+        let (remaining, key_id_span, key_id) = super::parse_bytes(remaining, type_span.end)?;
+        let (remaining, valid_principals_span, valid_principals) =
+            super::parse_bytes(remaining, key_id_span.end)?;
+        let (remaining, valid_after_span, valid_after) =
+            super::parse_u64(remaining, valid_principals_span.end)?;
+        let (remaining, valid_before_span, valid_before) =
+            super::parse_u64(remaining, valid_after_span.end)?;
+        let (remaining, critical_options_span, critical_options) =
+            super::parse_bytes(remaining, valid_before_span.end)?;
+        let (remaining, extensions_span, extensions) =
+            super::parse_bytes(remaining, critical_options_span.end)?;
+        let (remaining, reserved_span, reserved) =
+            super::parse_bytes(remaining, extensions_span.end)?;
+        let (remaining, signature_key_span, signature_key) =
+            super::parse_bytes(remaining, reserved_span.end)?;
+        let (remaining, signature_span, signature) =
+            super::parse_bytes(remaining, signature_key_span.end)?;
+        let pubkey_certificate = PublicKeyCertificate {
+            nonce: BitStr::from(nonce),
+            inner: serde_json::to_value(&wrapped2)?,
+            serial,
+            type_,
+            key_id: BitStr::from(key_id),
+            valid_principals: BitStr::from(valid_principals),
+            valid_after,
+            valid_before,
+            critical_options: BitStr::from(critical_options),
+            extensions: BitStr::from(extensions),
+            reserved: BitStr::from(reserved),
+            signature_key: BitStr::from(signature_key),
+            signature: BitStr::from(signature),
+        };
+        content = remaining;
+        wrapped.span = Span::new(offset, signature_span.end);
+        wrapped.content = serde_json::to_value(&pubkey_certificate)?;
+        key_span_end = signature_span.end;
     }
     if !parsed {
         return Err(Error::ParseError);

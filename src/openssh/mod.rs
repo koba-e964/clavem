@@ -2,6 +2,7 @@ use crate::span::Span;
 
 use self::error::{Error, Result};
 
+pub mod cert;
 pub mod dsa;
 pub mod ecdsa;
 pub mod ed25519;
@@ -25,6 +26,14 @@ fn parse_u32(content: &[u8], offset: usize) -> Result<(&[u8], Span, u32)> {
     }
     let value = u32::from_be_bytes(<[u8; 4]>::try_from(&content[..4]).unwrap());
     Ok((&content[4..], Span::new(offset, offset + 4), value))
+}
+
+fn parse_u64(content: &[u8], offset: usize) -> Result<(&[u8], Span, u64)> {
+    if content.len() < 8 {
+        return Err(Error::ParseError);
+    }
+    let value = u64::from_be_bytes(<[u8; 8]>::try_from(&content[..8]).unwrap());
+    Ok((&content[8..], Span::new(offset, offset + 8), value))
 }
 
 fn parse_bytes(content: &[u8], offset: usize) -> Result<(&[u8], Span, &[u8])> {
