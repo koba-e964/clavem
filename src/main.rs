@@ -1,4 +1,5 @@
-use clap::{Parser, ValueEnum};
+use bpaf::{long, Bpaf, Parser};
+use core::str::FromStr;
 use serde::Serialize;
 use std::fs;
 
@@ -11,24 +12,42 @@ use clavem::der::{cert, csr, rsa};
 #[cfg(feature = "openssh")]
 use clavem::openssh;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum OutputFormat {
     Text,
     Json,
 }
 
-#[derive(Parser, Debug)]
-struct Args {
-    #[arg(long = "display-span")]
+impl FromStr for OutputFormat {
+    type Err = &'static str;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "text" => Ok(OutputFormat::Text),
+            "json" => Ok(OutputFormat::Json),
+            _ => Err("Invalid output format"),
+        }
+    }
+}
+
+fn output_format() -> impl Parser<OutputFormat> {
+    long("output-format")
+        .help("Output format")
+        .argument::<OutputFormat>("OUTPUT_FORMAT")
+        .fallback(OutputFormat::Json)
+}
+
+#[derive(Debug, Clone, Bpaf)]
+#[bpaf(options)]
+pub struct Options {
+    #[bpaf(long("display-span"), switch)]
     display_span: bool,
-    #[arg(
-        long = "output-format",
-        default_value_t = OutputFormat::Text,
-        value_enum,
-    )]
+    #[bpaf(external(output_format))]
+    #[allow(dead_code)]
     output_format: OutputFormat, // TODO: add support for Text
-    #[arg(long)]
+    #[bpaf(long, switch)]
     all: bool,
+    #[bpaf(positional)]
     filename: String,
 }
 
@@ -49,7 +68,7 @@ fn remove_spans(value: &mut serde_json::Value) {
     }
 }
 
-fn display<T: Serialize>(args: &Args, wrapped: &T) {
+fn display<T: Serialize>(args: &Options, wrapped: &T) {
     let mut json_value = serde_json::to_value(wrapped).unwrap();
     if !args.display_span {
         // remove all spans
@@ -58,7 +77,7 @@ fn display<T: Serialize>(args: &Args, wrapped: &T) {
     println!("{}", serde_json::to_string_pretty(&json_value).unwrap());
 }
 
-fn parse_as_pem(args: &Args, data: &[u8]) -> pem::Result<()> {
+fn parse_as_pem(args: &Options, data: &[u8]) -> pem::Result<()> {
     let result = pem::parse_many(data)?;
     if result.is_empty() {
         return Err(pem::PemError::MissingData);
@@ -159,7 +178,7 @@ fn parse_as_pem(args: &Args, data: &[u8]) -> pem::Result<()> {
 }
 
 fn main() -> Result<(), &'static str> {
-    let mut args: Args = Args::parse();
+    let mut args: Options = options().run();
     let filename = args.filename.clone();
     if args.all {
         args.display_span = true;

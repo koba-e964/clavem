@@ -13,7 +13,8 @@ num-bigint = "0.4"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
 thiserror = "1"
-clap = { version = "4.5.1", features = ["derive"] }
+# We use bpaf instead of clap because it has smaller size.
+bpaf = { version = "0.9", features = ["autocomplete", "derive"] }
 
 [features]
 default = ["der", "openssh"]
