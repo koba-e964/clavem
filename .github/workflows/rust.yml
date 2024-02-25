@@ -1,6 +1,7 @@
 name: Rust
 
-on:
+"on":
+  workflow_dispatch:
   push:
     branches: [master]
   pull_request:
@@ -15,6 +16,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: install OpenSSH
+        run: |
+          git clone https://github.com/openssh/openssh-portable --branch V_9_6_P1 --depth 1
+          cd openssh-portable
+          autoreconf
+          ./configure
+          make && sudo make install
+          which ssh-keygen
       - uses: actions/checkout@v4
       - name: cargo version
         run: cargo --version
