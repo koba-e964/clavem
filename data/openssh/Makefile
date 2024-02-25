@@ -15,7 +15,7 @@ id_ed25519_encrypted.pub: id_ed25519_encrypted
 
 %-cert.pub: %.pub id_ed25519
 	@# 2024-02-25 12:00:00 UTC to 2024-02-26 12:00:00 UTC
-	ssh-keygen -s id_ed25519 -I test-certificate -n koba,kobae964 -V 20240225120000:20240226120000 $*.pub
+	ssh-keygen -s id_ed25519 -I test-certificate -n koba,kobae964 -V 20240225120000UTC:20240226120000UTC $*.pub
 
 verify: $(OBJECTS) $(CERTS) sha256sum.txt
 	sha256sum --check sha256sum.txt
