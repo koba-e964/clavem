@@ -13,6 +13,7 @@ num-bigint = "0.4"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
 thiserror = "1"
+clap = { version = "4.5.1", features = ["derive"] }
 
 [features]
 default = ["der", "openssh"]

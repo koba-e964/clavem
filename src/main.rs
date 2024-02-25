@@ -1,5 +1,6 @@
+use clap::{Parser, ValueEnum};
 use serde::Serialize;
-use std::{env, fs};
+use std::fs;
 
 #[cfg(feature = "der")]
 use clavem::der::privkey::{parse_private_key, PrivateKey};
@@ -10,7 +11,54 @@ use clavem::der::{cert, csr, rsa};
 #[cfg(feature = "openssh")]
 use clavem::openssh;
 
-fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
+#[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum)]
+enum OutputFormat {
+    Text,
+    Json,
+}
+
+#[derive(Parser, Debug)]
+struct Args {
+    #[arg(long = "display-span")]
+    display_span: bool,
+    #[arg(
+        long = "output-format",
+        default_value_t = OutputFormat::Text,
+        value_enum,
+    )]
+    output_format: OutputFormat, // TODO: add support for Text
+    #[arg(long)]
+    all: bool,
+    filename: String,
+}
+
+fn remove_spans(value: &mut serde_json::Value) {
+    match value {
+        serde_json::Value::Object(map) => {
+            map.remove("span");
+            for (_, value) in map {
+                remove_spans(value);
+            }
+        }
+        serde_json::Value::Array(array) => {
+            for value in array {
+                remove_spans(value);
+            }
+        }
+        _ => {}
+    }
+}
+
+fn display<T: Serialize>(args: &Args, wrapped: &T) {
+    let mut json_value = serde_json::to_value(wrapped).unwrap();
+    if !args.display_span {
+        // remove all spans
+        remove_spans(&mut json_value);
+    }
+    println!("{}", serde_json::to_string_pretty(&json_value).unwrap());
+}
+
+fn parse_as_pem(args: &Args, data: &[u8]) -> pem::Result<()> {
     let result = pem::parse_many(data)?;
     if result.is_empty() {
         return Err(pem::PemError::MissingData);
@@ -29,7 +77,7 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
                 ty: "PEM public key",
                 value,
             };
-            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+            display(args, &wrapped);
         }
         #[cfg(feature = "der")]
         if pem.tag() == "RSA PRIVATE KEY" {
@@ -44,7 +92,7 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
                 ty: "PEM RSA private key",
                 value,
             };
-            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+            display(args, &wrapped);
         }
         #[cfg(feature = "der")]
         if pem.tag() == "PRIVATE KEY" {
@@ -59,7 +107,7 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
                 ty: "PEM private key",
                 value,
             };
-            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+            display(args, &wrapped);
         }
         #[cfg(feature = "der")]
         if pem.tag() == "CERTIFICATE" {
@@ -89,7 +137,7 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
                 ty: "PEM certificate request",
                 value,
             };
-            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+            display(args, &wrapped);
         }
         #[cfg(feature = "openssh")]
         if pem.tag() == "OPENSSH PRIVATE KEY" {
@@ -104,15 +152,18 @@ fn parse_as_pem(data: &[u8]) -> pem::Result<()> {
                 ty: "OPENSSH private key",
                 value,
             };
-            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+            display(args, &wrapped);
         }
     }
     Ok(())
 }
 
 fn main() -> Result<(), &'static str> {
-    let args: Vec<String> = env::args().collect();
-    let filename = args[1].clone();
+    let mut args: Args = Args::parse();
+    let filename = args.filename.clone();
+    if args.all {
+        args.display_span = true;
+    }
     let data = fs::read(filename).expect("Unable to read file");
     if let Ok(data) = std::str::from_utf8(&data) {
         if let Ok(value) = openssh::pubkey::parse(data) {
@@ -126,12 +177,12 @@ fn main() -> Result<(), &'static str> {
                 ty: "OPENSSH public key",
                 value,
             };
-            println!("{}", serde_json::to_string_pretty(&wrapped).unwrap());
+            display(&args, &wrapped);
 
             return Ok(());
         }
     }
-    if parse_as_pem(&data).is_ok() {
+    if parse_as_pem(&args, &data).is_ok() {
         return Ok(());
     }
     Err("Unsupported!")

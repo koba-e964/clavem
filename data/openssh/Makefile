@@ -13,8 +13,8 @@ verify: $(OBJECTS) sha256sum.txt
 	sha256sum --check sha256sum.txt
 
 $(CHECKS): %.check: % %.pub
-	cargo run -- $* | tee $*.json
-	cargo run -- $*.pub | tee $*.pub.json
+	cargo run -- --display-span --output-format=json $* | tee $*.json
+	cargo run -- --display-span --output-format=json $*.pub | tee $*.pub.json
 
 clean:
 	$(RM) $(OBJECTS)
