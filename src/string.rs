@@ -22,7 +22,7 @@ impl Serialize for BitStr {
     }
 }
 
-impl<'a> From<BitString<'a>> for BitStr {
+impl From<BitString<'_>> for BitStr {
     fn from(b: BitString) -> Self {
         BitStr {
             len: b.data.len(),
@@ -61,7 +61,7 @@ impl Serialize for PrivateBitStr {
     }
 }
 
-impl<'a> From<BitString<'a>> for PrivateBitStr {
+impl From<BitString<'_>> for PrivateBitStr {
     fn from(b: BitString) -> Self {
         PrivateBitStr {
             len: b.data.len(),

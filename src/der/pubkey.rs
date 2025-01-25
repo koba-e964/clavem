@@ -16,7 +16,7 @@ pub(crate) struct AlgorithmIdentifierAsn1<'a> {
     parameter: Option<Any<'a>>,
 }
 
-impl<'a> AlgorithmIdentifierAsn1<'a> {
+impl AlgorithmIdentifierAsn1<'_> {
     pub(crate) fn to(&self, registry: &OidRegistry) -> Object {
         let algo = &self.algorithm;
         (algo, registry.get(algo)).into()
@@ -31,7 +31,7 @@ pub(crate) struct SubjectPublicKeyInfoAsn1<'a> {
     pub(crate) subjectPublicKey: BitString<'a>,
 }
 
-impl<'a> SubjectPublicKeyInfoAsn1<'a> {
+impl SubjectPublicKeyInfoAsn1<'_> {
     pub(crate) fn to(&self, registry: &OidRegistry) -> Result<PublicKey> {
         let x25519 = Oid::from(&[1, 3, 101, 110]).unwrap();
         let x448 = Oid::from(&[1, 3, 101, 111]).unwrap();

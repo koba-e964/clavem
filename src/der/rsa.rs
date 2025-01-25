@@ -79,7 +79,7 @@ pub mod privkey {
             };
             let other_primes = SequenceOf::<OtherPrimeInfoAsn1>::try_from(other_primes)?;
             other_primes
-                .into_iter()
+                .iter()
                 .map(|info| OtherPrime {
                     prime: (&info.prime).into(),
                     exponent: (&info.exponent).into(),

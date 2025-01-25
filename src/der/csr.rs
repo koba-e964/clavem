@@ -98,7 +98,7 @@ pub struct CertificationRequest {
     pub signature: BitStr,
 }
 
-impl<'a> CertificationRequestAsn1<'a> {
+impl CertificationRequestAsn1<'_> {
     fn to(self, registry: &OidRegistry) -> Result<CertificationRequest> {
         Ok(CertificationRequest {
             certification_request_info: self.certificationRequestInfo.to(registry)?,
