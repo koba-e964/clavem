@@ -3,16 +3,18 @@ name = "clavem"
 version = "0.1.0"
 edition = "2021"
 description = "`clavem` reads a key and displays contained data."
+publish = false
+rust-version = "1.72"
 
 [dependencies]
 pem = "3"
-asn1-rs = { version = "0.5", features = ["bigint"] }
-base64 = "0.21"
-oid-registry = { version = "0.6", features = ["crypto", "kdf"] }
+asn1-rs = { version = "0.7", features = ["bigint"] }
+base64 = "0.22"
+oid-registry = { version = "0.8", features = ["crypto", "kdf"] }
 num-bigint = "0.4"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }
-thiserror = "1"
+thiserror = "2"
 # We use bpaf instead of clap because it has smaller size.
 bpaf = { version = "0.9", features = ["autocomplete", "derive"] }
 
